@@ -53,7 +53,7 @@ public class ChatAdapterList extends BaseAdapter {
         TextView ansText2 = (TextView) vi.findViewById(R.id.answer_2);
         TextView ansText3 = (TextView) vi.findViewById(R.id.answer_3);
         TextView ansText4 = (TextView) vi.findViewById(R.id.answer_4);
-        if (questions.get(i).isQuestionOpen())
+        if (questions.get(i).getQuestionOpen())
         {
 //            for (int j = 0 ; j < 4 ; j ++)
 //            {

@@ -84,7 +84,7 @@ public class Chat implements Serializable {
     {
         if (questions != null) {
             for (Question quest : questions) {
-                if (quest.isQuestionOpen()) {
+                if (quest.getQuestionOpen()) {
                     return true;
                 }
             }
@@ -96,7 +96,7 @@ public class Chat implements Serializable {
     {
         if (questions != null) {
             for (Question quest : questions) {
-                if (quest.isQuestionOpen()) {
+                if (quest.getQuestionOpen()) {
                     return questions.get(questions.indexOf(quest));
                 }
             }

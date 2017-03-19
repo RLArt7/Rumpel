@@ -13,7 +13,7 @@ import com.example.harelavikasis.rumpel.Models.Chat;
 import com.example.harelavikasis.rumpel.Models.Question;
 import com.example.harelavikasis.rumpel.Models.UserManger;
 import com.example.harelavikasis.rumpel.R;
-import com.example.harelavikasis.rumpel.listeners.OnChatReadyListener;
+import com.example.harelavikasis.rumpel.listeners.OnAnswerClicked;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,7 +26,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class RiddleChatActivity extends AppCompatActivity implements OnChatReadyListener {
+public class RiddleChatActivity extends AppCompatActivity implements OnAnswerClicked {
 
     @Bind(R.id.riddle_list)
     RecyclerView riddleList;
@@ -39,6 +39,7 @@ public class RiddleChatActivity extends AppCompatActivity implements OnChatReady
     private DatabaseReference mDatabase;
     private DatabaseReference globalDatabase;
 
+    private RiddleChatActivity self = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +74,7 @@ public class RiddleChatActivity extends AppCompatActivity implements OnChatReady
     }
 
     private void setDatabseChatHistory(String chatId) {
-        String fakeChatId = "-Kf_bdTSTIdUygMKyzms";
+        String fakeChatId = "-Kfc-jVPq8wFpi9Iplmp";
         mDatabase = FirebaseDatabase.getInstance().getReference("chats").child(fakeChatId);
     }
 
@@ -89,7 +90,7 @@ public class RiddleChatActivity extends AppCompatActivity implements OnChatReady
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 currentChat =  dataSnapshot.getValue(Chat.class);
-                adapter.setQuestions(currentChat.getQuestions());
+                adapter.setQuestions(currentChat.getQuestions() , self);
                 checkForOpenQuestion();
             }
 
@@ -110,12 +111,12 @@ public class RiddleChatActivity extends AppCompatActivity implements OnChatReady
             answers.add(new Answer("Los angles", false));
             answers.add(new Answer("Jerusalem", false));
 
-            String key1 = mDatabase.child("questions").push().getKey();
+            String key1 = globalDatabase.child("questions").push().getKey();
             Question q1 = new Question(key1 , "where whitehouse?", answers);
             globalDatabase.child("questions").child(q1.getId()).setValue(q1);
             q1.setSenderId(UserManger.getInstance().getUserId());
 
-            String key2 = mDatabase.child("questions").push().getKey();
+            String key2 = globalDatabase.child("questions").push().getKey();
             Question q2 = new Question(key2, "where New york?", answers);
             q2.closeQuestion();
             q2.setSenderId("jsdcjals");
@@ -124,15 +125,15 @@ public class RiddleChatActivity extends AppCompatActivity implements OnChatReady
 
             c.addQuestion(q2);
             c.addQuestion(q1);
-            String key = mDatabase.child("chats").push().getKey();
+            String key = globalDatabase.child("chats").push().getKey();
             c.setId(key);
             cManger.updateChatRecord(c);
         }else{
             c = cManger.fetchConversationByEndPoint(c);
         }
         currentChat = c;
-        mDatabase.child("chats").child(currentChat.getId()).setValue(currentChat);
-        adapter.setQuestions(currentChat.getQuestions());
+        globalDatabase.child("chats").child(currentChat.getId()).setValue(currentChat);
+        adapter.setQuestions(currentChat.getQuestions() , this);
 
         checkForOpenQuestion();
     }
@@ -157,33 +158,27 @@ public class RiddleChatActivity extends AppCompatActivity implements OnChatReady
 
 
         List<Answer> answers = new ArrayList<>();
-        answers.add(new Answer("picachu", true));
-        answers.add(new Answer("charmander", false));
-        answers.add(new Answer("squirtle", false));
-        answers.add(new Answer("togapi", false));
+        answers.add(new Answer("Nechama", true));
+        answers.add(new Answer("Yokenet", false));
+        answers.add(new Answer("PAPA jones", false));
+        answers.add(new Answer("Senyorita", false));
 
         String key1 = globalDatabase.child("questions").push().getKey();
-        Question q1 = new Question(key1 , "who is Ash faivorite?", answers);
+        Question q1 = new Question(key1 , "what is my beautiful lovely wife's name?", answers);
         globalDatabase.child("questions").child(q1.getId()).setValue(q1);
         q1.setSenderId(UserManger.getInstance().getUserId());
 
         if (currentChat.getOpenQuestion() != null)  currentChat.getOpenQuestion().closeQuestion();
         currentChat.addQuestion(q1);
         mDatabase.child("questions").setValue(currentChat.getQuestions());
+        mDatabase.child("thereOpenQuestion").setValue(true);
     }
 
     @Override
-    public void onAddPost(Chat chat) {
-
-    }
-
-    @Override
-    public void onUpdatedPost(Chat chat, int index) {
-
-    }
-
-    @Override
-    public void onRemovedPost(int index) {
-
+    public void notifyChatForQuestionsAnswer(Boolean isRight) {
+            currentChat.getOpenQuestion().setIsRightAnswer(isRight);
+            currentChat.getOpenQuestion().closeQuestion();
+            mDatabase.child("questions").setValue(currentChat.getQuestions());
+            mDatabase.child("thereOpenQuestion").setValue(false);
     }
 }

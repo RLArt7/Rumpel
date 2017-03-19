@@ -13,12 +13,12 @@ public class Question implements Serializable {
     private String id;
     private String questionText;
     private String senderId;
-    List<Answer> answers = new ArrayList<>();
+    private List<Answer> answers = new ArrayList<>();
     private Date initialTime;
     int timeToAnswer;
 
-    Boolean isRightAnswer = false;
-    Boolean isQuestionOpen = true;
+    private Boolean isRightAnswer = false;
+    private Boolean isQuestionOpen = true;
     public Question(){}
 
     public Question(String id, String questText, List<Answer> answers) {
@@ -34,8 +34,12 @@ public class Question implements Serializable {
         this.timeToAnswer = timeToAnswer;
     }
 
-    public void setRightAnswer(Boolean rightAnswer) {
+    public void setIsRightAnswer(Boolean rightAnswer) {
         isRightAnswer = rightAnswer;
+    }
+
+    public Boolean getIsRightAnswer() {
+        return isRightAnswer;
     }
 
     public int getTimeToAnswer() {
@@ -84,9 +88,9 @@ public class Question implements Serializable {
         return false;
     }
 
-    public Boolean isQuestionOpen() {
-        return isQuestionOpen;
-    }
+//    public Boolean isQuestionOpen() {
+//        return isQuestionOpen;
+//    }
 
     public String getSenderId() {
         return senderId;
@@ -94,6 +98,14 @@ public class Question implements Serializable {
 
     public void setSenderId(String senderId) {
         this.senderId = senderId;
+    }
+
+    public Boolean getQuestionOpen() {
+        return isQuestionOpen;
+    }
+
+    public void setQuestionOpen(Boolean questionOpen) {
+        isQuestionOpen = questionOpen;
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.harelavikasis.rumpel.Models.Question;
@@ -29,6 +30,7 @@ public class RecyclerChatAdapterList extends RecyclerView.Adapter<RecyclerChatAd
     private List<Question> questions = new ArrayList<>();
     private Question openQuestion;
     private OnAnswerClicked mlistener;
+    private int tempIndex = 0;
 
     public RecyclerChatAdapterList(Context context) {
         this.mContext = context;
@@ -45,57 +47,41 @@ public class RecyclerChatAdapterList extends RecyclerView.Adapter<RecyclerChatAd
         holder.chatText.setText(question.getQuestionText());
         if (question.getQuestionOpen()){
             this.openQuestion = question;
-            holder.ansText1.setText("a: " + question.getAnswers().get(0).getAnswerText());
-            holder.ansText1.setClickable(true);
-            holder.ansText1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v)
-                {
-                    mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(0).getIsRight());
-                }
-            });
-
-            holder.ansText2.setText("b: " +question.getAnswers().get(1).getAnswerText());
-            holder.ansText2.setClickable(true);
-            holder.ansText2.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v)
-                {
-                    mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(1).getIsRight());
-                }
-            });
-
-            holder.ansText3.setText("c: " +question.getAnswers().get(2).getAnswerText());
-            holder.ansText3.setClickable(true);
-            holder.ansText3.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v)
-                {
-                    mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(2).getIsRight());
-                }
-            });
-
-            holder.ansText4.setText("d: " +question.getAnswers().get(3).getAnswerText());
-            holder.ansText4.setClickable(true);
-            holder.ansText4.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v)
-                {
-                    mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(3).getIsRight());
-                }
-            });
+            setHolder(holder.ansText1, question,0);
+            setHolder(holder.ansText2, question,1);
+            setHolder(holder.ansText3, question,2);
+            setHolder(holder.ansText4, question,3);
+            holder.indicaorIV.setVisibility(View.GONE);
         }
         else{
             holder.ansText1.setVisibility(View.GONE);
             holder.ansText2.setVisibility(View.GONE);
             holder.ansText3.setVisibility(View.GONE);
             holder.ansText4.setVisibility(View.GONE);
+            if (question.getIsRightAnswer()) {
+                holder.indicaorIV.setImageResource(R.drawable.ic_thumbs_up);
+            }else{
+                holder.indicaorIV.setImageResource(R.drawable.ic_thumbs_down);
+            }
             //TODO: here we need to add the total time to answer the question and indicator if its right or worng
         }
         if(question.getSenderId().equals(UserManger.getInstance().getUserId())) {
             // TODO: here we need to decide how to align the message row
             holder.chatText.setBackgroundColor(Color.BLUE);
         }
+    }
+
+    private void setHolder(TextView ansText, Question question,int index) {
+        tempIndex = index;
+        ansText.setText((tempIndex+1) + ": " + question.getAnswers().get(tempIndex).getAnswerText());
+        ansText.setClickable(true);
+        ansText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(tempIndex).getIsRight());
+            }
+        });
     }
 
     @Override
@@ -109,6 +95,7 @@ public class RecyclerChatAdapterList extends RecyclerView.Adapter<RecyclerChatAd
         notifyDataSetChanged();
     }
 
+
     class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.chat_text)
         TextView chatText;
@@ -120,6 +107,8 @@ public class RecyclerChatAdapterList extends RecyclerView.Adapter<RecyclerChatAd
         TextView ansText3;
         @Bind(R.id.answer_4)
         TextView ansText4;
+        @Bind(R.id.indicator_image_view)
+        ImageView indicaorIV;
 
         ViewHolder(View itemView) {
             super(itemView);

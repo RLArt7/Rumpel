@@ -92,7 +92,7 @@ public class Chat implements Serializable {
         return false;
     }
 
-    public Question getOpenQuestion()
+    public Question fetchTheOpenQuestion()
     {
         if (questions != null) {
             for (Question quest : questions) {

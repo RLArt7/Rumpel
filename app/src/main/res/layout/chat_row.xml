@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="15dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/green_200"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="2dp">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/chat_text"
+        android:background="@color/blue_100"
+        android:text = "aaaaaaa"
+        android:textSize="24sp"
+        android:textStyle="normal|bold"
+        android:fontFamily="sans-serif" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/chat_text"
+        android:background="@color/green_200"
+        android:id="@+id/answer_1"
+        android:text = "aaaaaaa"
+        android:textSize="18sp"
+        android:layout_marginLeft="30dp"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/answer_2"
+        android:layout_below="@+id/answer_1"
+        android:background="@color/green_200"
+        android:layout_alignLeft="@+id/answer_1"
+        android:text = "aaaaaaa"
+        android:textSize="18sp" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/answer_3"
+        android:layout_below="@+id/answer_2"
+        android:text = "aaaaaaa"
+        android:background="@color/green_200"
+        android:layout_alignLeft="@+id/answer_1"
+        android:textSize="18sp" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/answer_4"
+        android:layout_below="@+id/answer_3"
+        android:text = "aaaaaaa"
+        android:background="@color/green_200"
+        android:layout_alignLeft="@+id/answer_1"
+        android:textSize="18sp" />
+
+
+</RelativeLayout>

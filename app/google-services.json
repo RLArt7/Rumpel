@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "408551768392",
+    "firebase_url": "https://rumpel-60255.firebaseio.com",
+    "project_id": "rumpel-60255",
+    "storage_bucket": "rumpel-60255.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:408551768392:android:cb24b13cbf452df3",
+        "android_client_info": {
+          "package_name": "com.example.harelavikasis.rumpel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "408551768392-4ugqr6rcd8ume58c4m5skuli8vvf6t9q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClQklmwP3rg1sM1eL0yWi-gDo7taKrO-E"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

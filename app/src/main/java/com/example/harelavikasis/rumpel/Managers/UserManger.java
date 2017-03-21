@@ -1,8 +1,6 @@
-package com.example.harelavikasis.rumpel.Models;
+package com.example.harelavikasis.rumpel.Managers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

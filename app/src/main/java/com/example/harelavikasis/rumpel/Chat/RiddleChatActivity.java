@@ -11,9 +11,9 @@
     import com.example.harelavikasis.rumpel.Models.Answer;
     import com.example.harelavikasis.rumpel.Models.Chat;
     import com.example.harelavikasis.rumpel.Models.Question;
-    import com.example.harelavikasis.rumpel.Models.UserManger;
+    import com.example.harelavikasis.rumpel.Managers.UserManger;
     import com.example.harelavikasis.rumpel.R;
-    import com.example.harelavikasis.rumpel.listeners.OnAnswerClicked;
+    import com.example.harelavikasis.rumpel.Listeners.OnAnswerClicked;
     import com.google.firebase.database.DataSnapshot;
     import com.google.firebase.database.DatabaseError;
     import com.google.firebase.database.DatabaseReference;
@@ -158,13 +158,13 @@
 
 
             List<Answer> answers = new ArrayList<>();
-            answers.add(new Answer("Nechama", true));
-            answers.add(new Answer("Yokenet", false));
-            answers.add(new Answer("PAPA jones", false));
-            answers.add(new Answer("Senyorita", false));
+            answers.add(new Answer("Misha", false));
+            answers.add(new Answer("Micail", false));
+            answers.add(new Answer("Michael", true));
+            answers.add(new Answer("MASHA", false));
 
             String key1 = globalDatabase.child("questions").push().getKey();
-            Question q1 = new Question(key1 , "what is my beautiful lovely wife's name?", answers);
+            Question q1 = new Question(key1 , "what is Misha real name?", answers);
             globalDatabase.child("questions").child(q1.getId()).setValue(q1);
             q1.setSenderId(UserManger.getInstance().getUserId());
 

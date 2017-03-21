@@ -1,6 +1,4 @@
-package com.example.harelavikasis.rumpel.listeners;
-
-import com.example.harelavikasis.rumpel.Models.Question;
+package com.example.harelavikasis.rumpel.Listeners;
 
 /**
  * Created by harelavikasis on 19/03/2017.

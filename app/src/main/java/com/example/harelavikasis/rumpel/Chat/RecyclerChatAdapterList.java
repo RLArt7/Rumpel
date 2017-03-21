@@ -1,17 +1,13 @@
 package com.example.harelavikasis.rumpel.Chat;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.example.harelavikasis.rumpel.Chat.holders.BaseViewHolder;
-import com.example.harelavikasis.rumpel.Chat.holders.MessageLeftHolder;
-import com.example.harelavikasis.rumpel.Chat.holders.MessageRightHolder;
+import com.example.harelavikasis.rumpel.ViewHolders.BaseViewHolder;
+import com.example.harelavikasis.rumpel.ViewHolders.MessageLeftHolder;
+import com.example.harelavikasis.rumpel.ViewHolders.MessageRightHolder;
 import com.example.harelavikasis.rumpel.Models.Question;
 import com.example.harelavikasis.rumpel.Managers.UserManger;
 import com.example.harelavikasis.rumpel.R;
@@ -19,9 +15,6 @@ import com.example.harelavikasis.rumpel.Listeners.OnAnswerClicked;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
 
 /**
  * Created by harelavikasis on 14/03/2017.

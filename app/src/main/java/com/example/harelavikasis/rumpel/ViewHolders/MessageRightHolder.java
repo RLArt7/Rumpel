@@ -1,7 +1,6 @@
-package com.example.harelavikasis.rumpel.Chat.holders;
+package com.example.harelavikasis.rumpel.ViewHolders;
 
 import android.graphics.Color;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,7 +16,7 @@ import butterknife.ButterKnife;
 /**
  * Created by harelavikasis on 21/03/2017.
  */
-public class MessageLeftHolder extends BaseViewHolder {
+public class MessageRightHolder extends BaseViewHolder{
     @Bind(R.id.chat_text)
     TextView chatText;
     @Bind(R.id.answer_1)
@@ -31,10 +30,9 @@ public class MessageLeftHolder extends BaseViewHolder {
     @Bind(R.id.indicator_image_view)
     ImageView indicaorIV;
 
-
-    public MessageLeftHolder(View itemView) {
-        super(itemView);
-        ButterKnife.bind(this, itemView);
+    public MessageRightHolder(View view) {
+        super(view);
+        ButterKnife.bind(this, view);
     }
 
     public void bind(Question q ,final OnAnswerClicked listener) {

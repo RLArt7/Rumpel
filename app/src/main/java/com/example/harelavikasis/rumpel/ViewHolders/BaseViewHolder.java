@@ -1,4 +1,4 @@
-package com.example.harelavikasis.rumpel.Chat.holders;
+package com.example.harelavikasis.rumpel.ViewHolders;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -6,8 +6,6 @@ import android.widget.TextView;
 
 import com.example.harelavikasis.rumpel.Listeners.OnAnswerClicked;
 import com.example.harelavikasis.rumpel.Models.Question;
-
-import butterknife.ButterKnife;
 
 /**
  * Created by harelavikasis on 21/03/2017.

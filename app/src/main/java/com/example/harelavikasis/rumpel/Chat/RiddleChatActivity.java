@@ -1,11 +1,14 @@
     package com.example.harelavikasis.rumpel.Chat;
 
+    import android.support.design.widget.BottomSheetBehavior;
+    import android.support.design.widget.FloatingActionButton;
     import android.support.v7.app.AppCompatActivity;
     import android.os.Bundle;
     import android.support.v7.widget.LinearLayoutManager;
     import android.support.v7.widget.RecyclerView;
     import android.view.View;
     import android.widget.Button;
+    import android.widget.ImageButton;
 
     import com.example.harelavikasis.rumpel.Managers.ChatManager;
     import com.example.harelavikasis.rumpel.Models.Answer;
@@ -31,7 +34,9 @@
         @Bind(R.id.riddle_list)
         RecyclerView riddleList;
         @Bind(R.id.add_question_button)
-        Button addQuestionButton;
+        FloatingActionButton addQuestionButton;
+        @Bind(R.id.bottom_sheet)
+        View bottomSheet;
 
         private RecyclerChatAdapterList adapter;
         private ChatManager cManger;
@@ -40,6 +45,7 @@
         private DatabaseReference globalDatabase;
 
         private RiddleChatActivity self = this;
+        private BottomSheetBehavior mBottomSheetBehavior;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +65,30 @@
 
             //  TODO: to get from the intent the endpointUserId so we can
             // fetch the chat id from it and set the data
-
+            setBottomSheet();
             setDatabseChatHistory("TODO:");
             fetchRiddleConversation();
+        }
+
+        private void setBottomSheet() {
+            mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+            mBottomSheetBehavior.setPeekHeight(0);
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                @Override
+                public void onStateChanged(View bottomSheet, int newState) {
+                    if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                        mBottomSheetBehavior.setPeekHeight(0);
+                        if (!currentChat.isThereOpenQuestion()) {
+                            addQuestionButton.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
+
+                @Override
+                public void onSlide(View bottomSheet, float slideOffset) {
+                }
+            });
         }
 
         private void initRecyclerView() {
@@ -157,21 +184,24 @@
     //        startActivity(nextScreen);
 
 
-            List<Answer> answers = new ArrayList<>();
-            answers.add(new Answer("Misha", false));
-            answers.add(new Answer("Micail", false));
-            answers.add(new Answer("Michael", true));
-            answers.add(new Answer("MASHA", false));
+//            List<Answer> answers = new ArrayList<>();
+//            answers.add(new Answer("Misha", false));
+//            answers.add(new Answer("Micail", false));
+//            answers.add(new Answer("Michael", true));
+//            answers.add(new Answer("MASHA", false));
+//
+//            String key1 = globalDatabase.child("questions").push().getKey();
+//            Question q1 = new Question(key1 , "what is Misha real name?", answers);
+//            globalDatabase.child("questions").child(q1.getId()).setValue(q1);
+//            q1.setSenderId(UserManger.getInstance().getUserId());
+//
+//            if (currentChat.fetchTheOpenQuestion() != null)  currentChat.fetchTheOpenQuestion().closeQuestion();
+//            currentChat.addQuestion(q1);
+//            mDatabase.child("questions").setValue(currentChat.getQuestions());
+//            mDatabase.child("thereOpenQuestion").setValue(true);
 
-            String key1 = globalDatabase.child("questions").push().getKey();
-            Question q1 = new Question(key1 , "what is Misha real name?", answers);
-            globalDatabase.child("questions").child(q1.getId()).setValue(q1);
-            q1.setSenderId(UserManger.getInstance().getUserId());
-
-            if (currentChat.fetchTheOpenQuestion() != null)  currentChat.fetchTheOpenQuestion().closeQuestion();
-            currentChat.addQuestion(q1);
-            mDatabase.child("questions").setValue(currentChat.getQuestions());
-            mDatabase.child("thereOpenQuestion").setValue(true);
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            v.setVisibility(View.GONE);
         }
 
         @Override

@@ -39,36 +39,38 @@ public class MessageRightHolder extends BaseViewHolder{
         Question question = q;
         this.mlistener = listener;
         chatText.setText(question.getQuestionText());
-        if (question.getQuestionOpen()) {
+        if (question.getQuestionOpen() ) {
             this.openQuestion = question;
             setHolder(ansText1, question, 0);
-            ansText1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(0).getIsRight());
-                }
-            });
             setHolder(ansText2, question, 1);
-            ansText2.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(1).getIsRight());
-                }
-            });
             setHolder(ansText3, question, 2);
-            ansText3.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(2).getIsRight());
-                }
-            });
             setHolder(ansText4, question, 3);
-            ansText4.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(3).getIsRight());
-                }
-            });
+            if (question.getSenderId() != UserManger.getInstance().getUserId()) {
+                ansText1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(0).getIsRight());
+                    }
+                });
+                ansText2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(1).getIsRight());
+                    }
+                });
+                ansText3.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(2).getIsRight());
+                    }
+                });
+                ansText4.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(3).getIsRight());
+                    }
+                });
+            }
             indicaorIV.setVisibility(View.GONE);
         } else {
             ansText1.setVisibility(View.GONE);

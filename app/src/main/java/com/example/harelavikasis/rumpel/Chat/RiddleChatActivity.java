@@ -184,24 +184,24 @@
     //        startActivity(nextScreen);
 
 
-//            List<Answer> answers = new ArrayList<>();
-//            answers.add(new Answer("Misha", false));
-//            answers.add(new Answer("Micail", false));
-//            answers.add(new Answer("Michael", true));
-//            answers.add(new Answer("MASHA", false));
-//
-//            String key1 = globalDatabase.child("questions").push().getKey();
-//            Question q1 = new Question(key1 , "what is Misha real name?", answers);
-//            globalDatabase.child("questions").child(q1.getId()).setValue(q1);
-//            q1.setSenderId(UserManger.getInstance().getUserId());
-//
-//            if (currentChat.fetchTheOpenQuestion() != null)  currentChat.fetchTheOpenQuestion().closeQuestion();
-//            currentChat.addQuestion(q1);
-//            mDatabase.child("questions").setValue(currentChat.getQuestions());
-//            mDatabase.child("thereOpenQuestion").setValue(true);
+            List<Answer> answers = new ArrayList<>();
+            answers.add(new Answer("Harel", true));
+            answers.add(new Answer("Eddie", false));
+            answers.add(new Answer("Michael", false));
+            answers.add(new Answer("Shasha", false));
 
-            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-            v.setVisibility(View.GONE);
+            String key1 = globalDatabase.child("questions").push().getKey();
+            Question q1 = new Question(key1 , "what is my name?", answers);
+            globalDatabase.child("questions").child(q1.getId()).setValue(q1);
+            q1.setSenderId(UserManger.getInstance().getUserId());
+
+            if (currentChat.fetchTheOpenQuestion() != null)  currentChat.fetchTheOpenQuestion().closeQuestion();
+            currentChat.addQuestion(q1);
+            mDatabase.child("questions").setValue(currentChat.getQuestions());
+            mDatabase.child("thereOpenQuestion").setValue(true);
+
+//            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+//            v.setVisibility(View.GONE);
         }
 
         @Override

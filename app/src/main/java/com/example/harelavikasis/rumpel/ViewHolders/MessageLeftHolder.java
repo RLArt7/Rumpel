@@ -27,9 +27,6 @@ public class MessageLeftHolder extends BaseViewHolder {
     TextView ansText3;
     @Bind(R.id.answer_4)
     TextView ansText4;
-    @Bind(R.id.indicator_image_view)
-    ImageView indicaorIV;
-
 
     public MessageLeftHolder(View itemView) {
         super(itemView);
@@ -43,43 +40,44 @@ public class MessageLeftHolder extends BaseViewHolder {
         if (question.getQuestionOpen()) {
             this.openQuestion = question;
             setHolder(ansText1, question, 0);
-            ansText1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(0).getIsRight());
-                }
-            });
             setHolder(ansText2, question, 1);
-            ansText2.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(1).getIsRight());
-                }
-            });
             setHolder(ansText3, question, 2);
-            ansText3.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(2).getIsRight());
-                }
-            });
             setHolder(ansText4, question, 3);
-            ansText4.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(3).getIsRight());
-                }
-            });
-            indicaorIV.setVisibility(View.GONE);
+//            if (question.getSenderId().equals(UserManger.getInstance().getUserId())) {
+                ansText1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(0).getIsRight());
+                    }
+                });
+                ansText2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(1).getIsRight());
+                    }
+                });
+                ansText3.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(2).getIsRight());
+                    }
+                });
+                ansText4.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(3).getIsRight());
+                    }
+                });
+//            }
         } else {
             ansText1.setVisibility(View.GONE);
             ansText2.setVisibility(View.GONE);
             ansText3.setVisibility(View.GONE);
             ansText4.setVisibility(View.GONE);
             if (question.getIsRightAnswer()) {
-                indicaorIV.setImageResource(R.drawable.ic_thumbs_up);
+                chatText.setText(question.getQuestionText() +" "+ getEmojiByUnicode(V_INDICATOR_UNICODE));
             } else {
-                indicaorIV.setImageResource(R.drawable.ic_thumbs_down);
+                chatText.setText(question.getQuestionText() +" "+ getEmojiByUnicode(X_INDICATOR_UNICODE));
             }
             //TODO: here we need to add the total time to answer the question and indicator if its right or worng
         }

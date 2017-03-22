@@ -27,8 +27,6 @@ public class MessageRightHolder extends BaseViewHolder{
     TextView ansText3;
     @Bind(R.id.answer_4)
     TextView ansText4;
-    @Bind(R.id.indicator_image_view)
-    ImageView indicaorIV;
 
     public MessageRightHolder(View view) {
         super(view);
@@ -45,7 +43,8 @@ public class MessageRightHolder extends BaseViewHolder{
             setHolder(ansText2, question, 1);
             setHolder(ansText3, question, 2);
             setHolder(ansText4, question, 3);
-            if (question.getSenderId() != UserManger.getInstance().getUserId()) {
+
+            if (!question.getSenderId().equals(UserManger.getInstance().getUserId())) {
                 ansText1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -71,22 +70,21 @@ public class MessageRightHolder extends BaseViewHolder{
                     }
                 });
             }
-            indicaorIV.setVisibility(View.GONE);
         } else {
             ansText1.setVisibility(View.GONE);
             ansText2.setVisibility(View.GONE);
             ansText3.setVisibility(View.GONE);
             ansText4.setVisibility(View.GONE);
             if (question.getIsRightAnswer()) {
-                indicaorIV.setImageResource(R.drawable.ic_thumbs_up);
+                chatText.setText(question.getQuestionText() +" "+ getEmojiByUnicode(V_INDICATOR_UNICODE));
             } else {
-                indicaorIV.setImageResource(R.drawable.ic_thumbs_down);
+                chatText.setText(question.getQuestionText() +" "+ getEmojiByUnicode(X_INDICATOR_UNICODE));
             }
             //TODO: here we need to add the total time to answer the question and indicator if its right or worng
         }
         if (question.getSenderId().equals(UserManger.getInstance().getUserId())) {
             // TODO: here we need to decide how to align the message row
-            chatText.setBackgroundColor(Color.BLUE);
+//            chatText.setBackgroundColor(Color.BLUE);
         }
     }
 }

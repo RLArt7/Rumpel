@@ -1,61 +1,64 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="15dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     app:cardCornerRadius="5dp"
     app:cardElevation="2dp"
-    android:paddingLeft="30dip"
-    android:paddingRight="10dip"
-    android:gravity="start"
-    android:background="@drawable/ic_leftbubble2"
+    android:paddingRight="20dip"
     >
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="30dip"
+        android:paddingRight="10dip"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/ic_leftbubble2">
+        <TextView
+            android:layout_gravity="right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/chat_text"
+            android:text = "aaaaaaa"
+            android:textSize="24sp"
+            android:textStyle="normal|bold"
+            android:fontFamily="sans-serif" />
 
-    <TextView
-        android:layout_gravity="right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/chat_text"
-        android:text = "aaaaaaa"
-        android:textSize="24sp"
-        android:textStyle="normal|bold"
-        android:fontFamily="sans-serif" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/chat_text"
+            android:id="@+id/answer_1"
+            android:text = "aaaaaaa"
+            android:textSize="18sp"
+            android:layout_alignLeft="@+id/chat_text"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/answer_2"
+            android:layout_below="@+id/answer_1"
+            android:layout_alignLeft="@+id/answer_1"
+            android:text = "aaaaaaa"
+            android:textSize="18sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/answer_3"
+            android:layout_below="@+id/answer_2"
+            android:text = "aaaaaaa"
+            android:layout_alignLeft="@+id/answer_1"
+            android:textSize="18sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/answer_4"
+            android:layout_below="@+id/answer_3"
+            android:text = "aaaaaaa"
+            android:layout_alignLeft="@+id/answer_1"
+            android:textSize="18sp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/chat_text"
-        android:id="@+id/answer_1"
-        android:text = "aaaaaaa"
-        android:textSize="18sp"
-        android:layout_alignLeft="@+id/chat_text"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/answer_2"
-        android:layout_below="@+id/answer_1"
-        android:layout_alignLeft="@+id/answer_1"
-        android:text = "aaaaaaa"
-        android:textSize="18sp" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/answer_3"
-        android:layout_below="@+id/answer_2"
-        android:text = "aaaaaaa"
-        android:layout_alignLeft="@+id/answer_1"
-        android:textSize="18sp" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/answer_4"
-        android:layout_below="@+id/answer_3"
-        android:text = "aaaaaaa"
-        android:layout_alignLeft="@+id/answer_1"
-        android:textSize="18sp" />
-
-
+    </RelativeLayout>
 </RelativeLayout>

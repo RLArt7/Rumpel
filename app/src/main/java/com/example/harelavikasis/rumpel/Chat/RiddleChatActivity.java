@@ -43,7 +43,7 @@
         private Chat currentChat;
         private DatabaseReference mDatabase;
         private DatabaseReference globalDatabase;
-
+        private LinearLayoutManager llm = new LinearLayoutManager(this);
         private RiddleChatActivity self = this;
         private BottomSheetBehavior mBottomSheetBehavior;
 
@@ -94,8 +94,8 @@
         private void initRecyclerView() {
 
             adapter = new RecyclerChatAdapterList(this);
-
-            riddleList.setLayoutManager(new LinearLayoutManager(this));
+            llm.setStackFromEnd(true);
+            riddleList.setLayoutManager(llm);
             riddleList.setHasFixedSize(true);
             riddleList.setAdapter(adapter);
         }
@@ -118,6 +118,7 @@
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     currentChat =  dataSnapshot.getValue(Chat.class);
                     adapter.setQuestions(currentChat.getQuestions() , self);
+                    llm.scrollToPosition(currentChat.getQuestions().size() - 1);
                     checkForOpenQuestion();
                 }
 

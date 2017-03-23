@@ -12,11 +12,11 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="false"
-        android:theme="@style/AppTheme"
-        android:configChanges="orientation"
-        android:screenOrientation="portrait">
+        android:theme="@style/AppTheme">
         <activity android:name=".Chat.RiddleChatActivity"
             android:windowSoftInputMode="adjustPan"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             >
 
             <intent-filter>
@@ -27,7 +27,9 @@
 
         </activity>
 
-        <!--<activity android:name=".Login.MainLoginActivity">-->
+        <!--<activity android:name=".Login.MainLoginActivity"-->
+            <!--android:configChanges="orientation"-->
+            <!--android:screenOrientation="portrait">-->
             <!--&lt;!&ndash;<intent-filter>&ndash;&gt;-->
                 <!--&lt;!&ndash;<action android:name="android.intent.action.MAIN" />&ndash;&gt;-->
 
@@ -39,7 +41,9 @@
             <!--&lt;!&ndash;</intent-filter>&ndash;&gt;-->
         <!--</activity>-->
 
-        <!--<activity android:name=".ContactList.ContactListActivity"></activity>-->
+        <!--<activity android:name=".ContactList.ContactListActivity"-->
+            <!--android:configChanges="orientation"-->
+            <!--android:screenOrientation="portrait"></activity>-->
 
 
     </application>

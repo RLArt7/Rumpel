@@ -1,5 +1,10 @@
     package com.example.harelavikasis.rumpel.Chat;
 
+    import android.content.Context;
+    import android.content.res.ColorStateList;
+    import android.graphics.Color;
+    import android.os.Build;
+    import android.support.annotation.RequiresApi;
     import android.support.design.widget.BottomSheetBehavior;
     import android.support.design.widget.FloatingActionButton;
     import android.support.v7.app.AppCompatActivity;
@@ -7,8 +12,11 @@
     import android.support.v7.widget.LinearLayoutManager;
     import android.support.v7.widget.RecyclerView;
     import android.view.View;
+    import android.view.inputmethod.InputMethodManager;
     import android.widget.Button;
+    import android.widget.EditText;
     import android.widget.ImageButton;
+    import android.widget.RadioButton;
 
     import com.example.harelavikasis.rumpel.Managers.ChatManager;
     import com.example.harelavikasis.rumpel.Models.Answer;
@@ -38,6 +46,28 @@
         @Bind(R.id.bottom_sheet)
         View bottomSheet;
 
+
+        @Bind(R.id.edit_question)
+        EditText questionText;
+
+        @Bind(R.id.edit_answer1)
+        EditText answer1Text;
+        @Bind(R.id.edit_answer2)
+        EditText answer2Text;
+        @Bind(R.id.edit_answer3)
+        EditText answer3Text;
+        @Bind(R.id.edit_answer4)
+        EditText answer4Text;
+
+        @Bind(R.id.radio_button1)
+        RadioButton radio1;
+        @Bind(R.id.radio_button2)
+        RadioButton radio2;
+        @Bind(R.id.radio_button3)
+        RadioButton radio3;
+        @Bind(R.id.radio_button4)
+        RadioButton radio4;
+
         private RecyclerChatAdapterList adapter;
         private ChatManager cManger;
         private Chat currentChat;
@@ -52,10 +82,10 @@
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_riddle_chat);
             ButterKnife.bind(this);
-
             // TODO: need to be mooved and set in the loginpage
             UserManger.getInstance().setUserId("helloWorld1234");
             UserManger.getInstance().setUserName("Harel");
+            setTitle("Name Of the Contact");
 
             initRecyclerView();
 
@@ -75,13 +105,26 @@
             mBottomSheetBehavior.setPeekHeight(0);
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                @RequiresApi(api = Build.VERSION_CODES.M)
                 @Override
                 public void onStateChanged(View bottomSheet, int newState) {
                     if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                         mBottomSheetBehavior.setPeekHeight(0);
+
                         if (!currentChat.isThereOpenQuestion()) {
-                            addQuestionButton.setVisibility(View.VISIBLE);
+                            addQuestionButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.blue_800)));
+//                            addQuestionButton.setVisibility(View.VISIBLE);
                         }
+                        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(questionText.getWindowToken(), 0);
+                    }
+                    if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                        answer4Text.setFocusableInTouchMode(true);
+                        answer4Text.requestFocus();
+
+                        final InputMethodManager inputMethodManager = (InputMethodManager) self.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.showSoftInput(answer4Text, InputMethodManager.SHOW_IMPLICIT);
+
                     }
                 }
 
@@ -167,15 +210,20 @@
         }
 
         private void checkForOpenQuestion() {
-            if (currentChat.isThereOpenQuestion()){
-                addQuestionButton.setVisibility(View.GONE);
-            }
-            else
-            {
-                addQuestionButton.setVisibility(View.VISIBLE);
+            if (addQuestionButton != null) {
+                if (currentChat.isThereOpenQuestion()) {
+
+                    addQuestionButton.setVisibility(View.GONE);
+                } else {
+                    addQuestionButton.setVisibility(View.VISIBLE);
+                }
             }
         }
 
+        public void onRadioButtonClicked(View v) {
+
+        }
+        @RequiresApi(api = Build.VERSION_CODES.M)
         public void sendRiddleTapped(View v) {
 
     //        Log.d("uniNote", "send riddle: " + v.getId());
@@ -184,15 +232,58 @@
 
     //        startActivity(nextScreen);
 
+            if(mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED)
+            {
+                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                addQuestionButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.green_600)));
+
+
+            }else if(mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
+            {
+                if (checkQuestionsAndAnswer()) {
+                    setNewQuestion();
+                    mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                }
+
+            }
+        }
+
+        private Boolean checkQuestionsAndAnswer() {
+            Boolean isGoodToGo = true;
+            if (questionText.getText().toString().trim().equals("")){
+                questionText.setError( "Question is required!" );
+                isGoodToGo = false;
+            }else {
+                if (answer1Text.getText().toString().trim().equals("")) {
+                    answer1Text.setError( "All answers are required!" );
+                    isGoodToGo = false;
+                }
+                if (answer2Text.getText().toString().trim().equals("")) {
+                    answer2Text.setError( "All answers are required!" );
+                    isGoodToGo = false;
+                }
+                if (answer3Text.getText().toString().trim().equals("")) {
+                    answer3Text.setError( "All answers are required!" );
+                    isGoodToGo = false;
+                }
+                if (answer4Text.getText().toString().trim().equals("")) {
+                    answer4Text.setError( "All answers are required!" );
+                    isGoodToGo = false;
+                }
+            }
+            return isGoodToGo;
+        }
+
+        private void setNewQuestion() {
 
             List<Answer> answers = new ArrayList<>();
-            answers.add(new Answer("Harel", true));
-            answers.add(new Answer("Eddie", false));
-            answers.add(new Answer("Michael", false));
-            answers.add(new Answer("Shasha", false));
+            answers.add(new Answer(answer1Text.getText().toString(), radio1.isChecked()));
+            answers.add(new Answer(answer2Text.getText().toString(), radio2.isChecked()));
+            answers.add(new Answer(answer3Text.getText().toString(), radio3.isChecked()));
+            answers.add(new Answer(answer4Text.getText().toString(), radio4.isChecked()));
 
             String key1 = globalDatabase.child("questions").push().getKey();
-            Question q1 = new Question(key1 , "what is my name?", answers);
+            Question q1 = new Question(key1 , questionText.getText().toString(), answers);
             globalDatabase.child("questions").child(q1.getId()).setValue(q1);
             q1.setSenderId(UserManger.getInstance().getUserId());
 
@@ -200,9 +291,15 @@
             currentChat.addQuestion(q1);
             mDatabase.child("questions").setValue(currentChat.getQuestions());
             mDatabase.child("thereOpenQuestion").setValue(true);
+            emptyAllFields();
+        }
 
-//            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-//            v.setVisibility(View.GONE);
+        private void emptyAllFields() {
+            questionText.setText("");
+            answer1Text.setText("");
+            answer2Text.setText("");
+            answer3Text.setText("");
+            answer4Text.setText("");
         }
 
         @Override

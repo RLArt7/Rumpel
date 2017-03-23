@@ -6,12 +6,9 @@
     android:id="@+id/activity_ridle_chat"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@color/grey_600"
-    tools:context="com.example.harelavikasis.rumpel.Chat.RiddleChatActivity">
+    android:background="@color/lime_300"
+    tools:context="com.example.harelavikasis.rumpel.Chat.RiddleChatActivity"
+    >
 
 
     <android.support.v7.widget.RecyclerView
@@ -21,10 +18,12 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_weight="1"
-        android:background="#FFFFFFFF"
         android:cacheColorHint="#00000000"
         android:divider="#FFAAAAAA"
-        android:dividerHeight="1dp" />
+        android:dividerHeight="1dp"
+        android:paddingBottom="2dip"
+        android:background="@drawable/ic_backgroung_vector"
+        />
 
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
@@ -35,6 +34,7 @@
         android:src="@drawable/ic_add"
         android:onClick="sendRiddleTapped"
         android:id="@+id/add_question_button"
+        app:backgroundTint="@color/blue_800"
         />
 
     <android.support.v4.widget.NestedScrollView
@@ -46,7 +46,7 @@
         app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
         >
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -67,15 +67,56 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
+                android:layout_below="@+id/text_view_dialog"
                 android:hint="What is your Question?"
                 android:padding="16dp"
                 android:textSize="16sp"
                 android:background="@color/grey_700"
                 />
+
+            <RadioGroup
+                android:layout_below="@+id/edit_question"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/answer1_row"
+            >
+                <RadioButton
+                    android:onClick="onRadioButtonClicked"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/radio_button1"
+                    android:layout_marginTop="18dp"
+                    android:checked="true"
+                    />
+                <RadioButton
+                    android:onClick="onRadioButtonClicked"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/radio_button2"
+                    android:layout_marginTop="24dp"
+
+                    />
+                <RadioButton
+                    android:onClick="onRadioButtonClicked"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/radio_button3"
+                    android:layout_marginTop="27dp"
+                    />
+                <RadioButton
+                    android:onClick="onRadioButtonClicked"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/radio_button4"
+                    android:layout_marginTop="26dp"
+                    />
+            </RadioGroup>
+
             <EditText
                 android:id="@+id/edit_answer1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dip"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
@@ -83,44 +124,49 @@
                 android:padding="16dp"
                 android:textSize="16sp"
                 android:background="@color/grey_500"
+                android:layout_below="@+id/edit_question"
+                android:layout_toRightOf="@+id/answer1_row"
                 />
             <EditText
                 android:id="@+id/edit_answer2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
+                android:layout_height="50dip"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
                 android:hint="Answer 2"
                 android:padding="16dp"
                 android:textSize="16sp"
                 android:background="@color/grey_500"
+                android:layout_below="@+id/edit_answer1"
+                android:layout_alignLeft="@+id/edit_answer1"
                 />
             <EditText
                 android:id="@+id/edit_answer3"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
+                android:layout_height="50dip"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
                 android:hint="Answer 3"
                 android:padding="16dp"
                 android:textSize="16sp"
                 android:background="@color/grey_500"
+                android:layout_below="@+id/edit_answer2"
+                android:layout_alignLeft="@+id/edit_answer1"
                 />
             <EditText
                 android:id="@+id/edit_answer4"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
+                android:layout_height="50dip"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
                 android:hint="Answer 4"
                 android:padding="16dp"
                 android:textSize="16sp"
                 android:background="@color/grey_500"
+                android:layout_below="@+id/edit_answer3"
+                android:layout_alignLeft="@+id/edit_answer1"
                 />
-        </LinearLayout>
+        </RelativeLayout>
 
 
 

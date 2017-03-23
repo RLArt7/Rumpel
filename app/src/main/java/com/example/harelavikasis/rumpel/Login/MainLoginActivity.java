@@ -61,7 +61,7 @@ public class MainLoginActivity extends AppCompatActivity {
             }
         };
 
-        loginButton.setReadPermissions("email", "public_profile");
+        loginButton.setReadPermissions("email", "public_profile", "user_friends");
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {

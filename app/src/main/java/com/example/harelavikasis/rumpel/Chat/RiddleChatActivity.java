@@ -76,6 +76,7 @@
         private LinearLayoutManager llm = new LinearLayoutManager(this);
         private RiddleChatActivity self = this;
         private BottomSheetBehavior mBottomSheetBehavior;
+        private float tempSlideOffset = 0;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -108,28 +109,36 @@
                 @RequiresApi(api = Build.VERSION_CODES.M)
                 @Override
                 public void onStateChanged(View bottomSheet, int newState) {
+                    if (newState == BottomSheetBehavior.PEEK_HEIGHT_AUTO) {
+
+                    }
                     if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                         mBottomSheetBehavior.setPeekHeight(0);
-
+                        tempSlideOffset = 0;
                         if (!currentChat.isThereOpenQuestion()) {
                             addQuestionButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.blue_800)));
 //                            addQuestionButton.setVisibility(View.VISIBLE);
                         }
-                        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(questionText.getWindowToken(), 0);
+//                        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+//                        imm.hideSoftInputFromWindow(questionText.getWindowToken(), 0);
                     }
                     if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                        answer4Text.setFocusableInTouchMode(true);
-                        answer4Text.requestFocus();
-
-                        final InputMethodManager inputMethodManager = (InputMethodManager) self.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.showSoftInput(answer4Text, InputMethodManager.SHOW_IMPLICIT);
+//                        answer4Text.setFocusableInTouchMode(true);
+//                        answer4Text.requestFocus();
+                        tempSlideOffset = 1;
+//                        final InputMethodManager inputMethodManager = (InputMethodManager) self.getSystemService(Context.INPUT_METHOD_SERVICE);
+//                        inputMethodManager.showSoftInput(answer4Text, InputMethodManager.SHOW_IMPLICIT);
 
                     }
                 }
 
                 @Override
                 public void onSlide(View bottomSheet, float slideOffset) {
+                    if (slideOffset < tempSlideOffset ){
+                        tempSlideOffset = 0;
+                        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(questionText.getWindowToken(), 0);
+                    }
                 }
             });
         }
@@ -221,6 +230,9 @@
         }
 
         public void onRadioButtonClicked(View v) {
+
+        }
+        public void getQuestionFromPool(View v) {
 
         }
         @RequiresApi(api = Build.VERSION_CODES.M)

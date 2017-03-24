@@ -1,6 +1,7 @@
     package com.example.harelavikasis.rumpel.Chat;
 
     import android.content.Context;
+    import android.content.Intent;
     import android.content.res.ColorStateList;
     import android.graphics.Color;
     import android.os.Build;
@@ -23,6 +24,7 @@
     import com.example.harelavikasis.rumpel.Models.Chat;
     import com.example.harelavikasis.rumpel.Models.Question;
     import com.example.harelavikasis.rumpel.Managers.UserManger;
+    import com.example.harelavikasis.rumpel.QuestionsPicker.QuestionsPickerView;
     import com.example.harelavikasis.rumpel.R;
     import com.example.harelavikasis.rumpel.Listeners.OnAnswerClicked;
     import com.google.firebase.database.DataSnapshot;
@@ -233,16 +235,19 @@
 
         }
         public void getQuestionFromPool(View v) {
-
+            Intent nextScreen = new Intent(getApplicationContext(), QuestionsPickerView.class);
+            nextScreen.putExtra("chatId", currentChat.getId()); //Optional parameters
+            startActivity(nextScreen);
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
         @RequiresApi(api = Build.VERSION_CODES.M)
         public void sendRiddleTapped(View v) {
 
     //        Log.d("uniNote", "send riddle: " + v.getId());
-    //        Intent nextScreen = new Intent(getApplicationContext(), ScoresTableActivity.class);
-    //        Intent nextScreen = new Intent(getApplicationContext(), ScoresTabActivity.class);
-
-    //        startActivity(nextScreen);
+//            Intent nextScreen = new Intent(getApplicationContext(), ScoresTableActivity.class);
+//            Intent nextScreen = new Intent(getApplicationContext(), ScoresTabActivity.class);
+//
+//            startActivity(nextScreen);
 
             if(mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED)
             {

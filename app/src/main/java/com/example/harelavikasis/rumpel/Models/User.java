@@ -1,32 +1,29 @@
-package com.example.harelavikasis.rumpel.Managers;
+package com.example.harelavikasis.rumpel.Models;
+
+import com.example.harelavikasis.rumpel.Managers.UserManger;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by harelavikasis on 19/03/2017.
+ * Created by harelavikasis on 26/03/2017.
  */
-public class UserManger {
-    private static UserManger ourInstance = new UserManger();
+
+public class User {
+
     private String userId;
     private String userName;
-    private Boolean isSet = false;
 //    private String facebookToken;
     private Map<String,String> chatIdMap =  new HashMap<String,String>();
 
-    public static UserManger getInstance() {
-        return ourInstance;
-    }
+    public User(){}
 
-    private UserManger() {
-    }
+    public User(String str){
+        this.userId = UserManger.getInstance().getUserId();
+        this.userName = UserManger.getInstance().getUserName();
+//        this.facebookToken = UserManger.getInstance().getFacebookToken();
+        this.chatIdMap = UserManger.getInstance().getChatIdMap();
 
-    public static UserManger getOurInstance() {
-        return ourInstance;
-    }
-
-    public static void setOurInstance(UserManger ourInstance) {
-        UserManger.ourInstance = ourInstance;
     }
 
     public String getUserId() {
@@ -59,18 +56,5 @@ public class UserManger {
 
     public void setChatIdMap(Map<String, String> chatIdMap) {
         this.chatIdMap = chatIdMap;
-        this.isSet = true;
-    }
-
-    public void addChatId(String chatId, String endPointUserId){
-        this.chatIdMap.put(endPointUserId,chatId);
-    }
-
-    public String getChatIdWithendPointUserId(String endPointUserId) {
-        return this.chatIdMap.get(endPointUserId);
-    }
-
-    public Boolean isSet(){
-        return this.isSet;
     }
 }

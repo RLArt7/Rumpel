@@ -1,11 +1,17 @@
 package com.example.harelavikasis.rumpel.Login;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
+import com.example.harelavikasis.rumpel.Chat.RiddleChatActivity;
+import com.example.harelavikasis.rumpel.Managers.UserManger;
+import com.example.harelavikasis.rumpel.Models.User;
+import com.example.harelavikasis.rumpel.QuestionsPicker.QuestionsPickerView;
 import com.example.harelavikasis.rumpel.R;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -20,14 +26,29 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+
+import java.io.Writer;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import es.dmoral.prefs.Prefs;
 
 public class MainLoginActivity extends AppCompatActivity {
     private static final String TAG = "RUMPEL";
+    public static final String KEY_USER = "USER";
+    private static final java.lang.String FIRST_TIME = "FIRST_TIME";
+
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth mAuth;
+    private DatabaseReference usersRef;
+    private MainLoginActivity self = this;
+
 
     @Bind(R.id.button_facebook_login)
     LoginButton loginButton;
@@ -50,14 +71,29 @@ public class MainLoginActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
+
                 if (user != null) {
+                    setAuthWithOAuth(user);
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                    if (!Prefs.with(self).readBoolean(FIRST_TIME))
+                    {
+                        Prefs.with(self).writeBoolean(FIRST_TIME,true);
+                    }
+                    else
+                    {
+                        loginButton.setVisibility(View.GONE);
+                    }
+                    if (UserManger.getInstance().isSet()) {
+                        Intent nextScreen = new Intent(getApplicationContext(), RiddleChatActivity.class);
+                        startActivity(nextScreen);
+                        finish();
+                    }
                 }
-                // ...
+//                } else {
+//                    // User is signed out
+//                    Log.d(TAG, "onAuthStateChanged:signed_out");
+//                }
             }
         };
 
@@ -66,6 +102,7 @@ public class MainLoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
+
                 handleFacebookAccessToken(loginResult.getAccessToken());
             }
 
@@ -81,6 +118,52 @@ public class MainLoginActivity extends AppCompatActivity {
                 // ...
             }
         });
+    }
+
+    private void setAuthWithOAuth(FirebaseUser u) {
+        if (AccessToken.getCurrentAccessToken() != null) {
+            // build writer object from firebase user.
+
+            UserManger.getInstance().setUserId(u.getUid());
+            UserManger.getInstance().setUserName(u.getDisplayName());
+
+            // get writers database reference
+            usersRef = FirebaseDatabase.getInstance().getReference().child("users").child(u.getUid());
+//            usersRef.setValue(new User("null"));
+            // set the data locally and remotely and update the login state.
+            usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot != null) {
+                        // remote user in firebase
+                        User remoteUser = dataSnapshot.getValue(User.class);
+
+                        // check for user changes if user exist remotely.
+                        if (remoteUser != null) {
+                            checkForUserChanges(remoteUser);
+                        }
+                        // update the local writer in the firebase
+                        usersRef.setValue(new User("null"));
+
+                        // save the user to shared preferences.
+                        Prefs.with(self).write(KEY_USER,new Gson()
+                                .toJson(new User("null")));
+
+                        if (UserManger.getInstance().isSet()) {
+                            Intent nextScreen = new Intent(getApplicationContext(), RiddleChatActivity.class);
+                            startActivity(nextScreen);
+                            finish();
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.d(TAG, "onCancelled: " + databaseError.getMessage());
+                }
+            });
+        }
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
@@ -125,6 +208,28 @@ public class MainLoginActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Pass the activity result back to the Facebook SDK
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void checkForUserChanges(User remoteUser) {
+
+        // check user name
+        if (!remoteUser.getUserName().equals(UserManger.getInstance().getUserName())) {
+            UserManger.getInstance().setUserName(remoteUser.getUserName());
+        }
+        UserManger.getInstance().setChatIdMap(remoteUser.getChatIdMap());
+
+//        // check user image
+//        if (!remoteUser.getImage().equals(localWriter.getImage())) {
+//            localWriter.setImage(remoteUser.getImage());
+//        }
     }
 
 

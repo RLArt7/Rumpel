@@ -13,8 +13,8 @@ public class RumpleMainApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-//        FacebookSdk.setApplicationId(getString(R.string.facebook_app_id));
-//        FacebookSdk.sdkInitialize(getApplicationContext());
+        FacebookSdk.setApplicationId(getString(R.string.facebook_app_id));
+        FacebookSdk.sdkInitialize(getApplicationContext());
         FirebaseApp.initializeApp(this);
     }
 }

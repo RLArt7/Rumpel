@@ -24,6 +24,7 @@
     import com.example.harelavikasis.rumpel.Models.Chat;
     import com.example.harelavikasis.rumpel.Models.Question;
     import com.example.harelavikasis.rumpel.Managers.UserManger;
+    import com.example.harelavikasis.rumpel.Models.User;
     import com.example.harelavikasis.rumpel.QuestionsPicker.QuestionsPickerView;
     import com.example.harelavikasis.rumpel.R;
     import com.example.harelavikasis.rumpel.Listeners.OnAnswerClicked;
@@ -75,6 +76,7 @@
         private Chat currentChat;
         private DatabaseReference mDatabase;
         private DatabaseReference globalDatabase;
+        private DatabaseReference usersRef;
         private LinearLayoutManager llm = new LinearLayoutManager(this);
         private RiddleChatActivity self = this;
         private BottomSheetBehavior mBottomSheetBehavior;
@@ -86,20 +88,21 @@
             setContentView(R.layout.activity_riddle_chat);
             ButterKnife.bind(this);
             // TODO: need to be mooved and set in the loginpage
-            UserManger.getInstance().setUserId("helloWorld1234");
-            UserManger.getInstance().setUserName("Harel");
+//            UserManger.getInstance().setUserId("helloWorld1234");
+//            UserManger.getInstance().setUserName("Harel");
             setTitle("Name Of the Contact");
 
             initRecyclerView();
 
             mDatabase = FirebaseDatabase.getInstance().getReference();
             globalDatabase = FirebaseDatabase.getInstance().getReference();
-            cManger = new ChatManager(this);
+            usersRef = FirebaseDatabase.getInstance().getReference().child("users").child(UserManger.getInstance().getUserId()).child("chatIdMap");
+//            cManger = new ChatManager(this);
 
             //  TODO: to get from the intent the endpointUserId so we can
             // fetch the chat id from it and set the data
             setBottomSheet();
-            setDatabseChatHistory("TODO:");
+            setDatabseChatHistory("jsdcjals");
             fetchRiddleConversation();
         }
 
@@ -154,9 +157,19 @@
             riddleList.setAdapter(adapter);
         }
 
-        private void setDatabseChatHistory(String chatId) {
+        private void setDatabseChatHistory(String endPointId) {
             String fakeChatId = "-Kfc-jVPq8wFpi9Iplmp";
-            mDatabase = FirebaseDatabase.getInstance().getReference("chats").child(fakeChatId);
+            String fakeEndPoint = endPointId;
+            String chatId = UserManger.getInstance().getChatIdWithendPointUserId(fakeEndPoint);
+
+            if (chatId == null)
+            {
+                chatId = globalDatabase.child("chats").push().getKey();
+                UserManger.getInstance().addChatId(chatId,fakeEndPoint);
+                usersRef.setValue(UserManger.getInstance().getChatIdMap());
+            }
+
+            mDatabase = FirebaseDatabase.getInstance().getReference("chats").child(chatId);
         }
 
         @Override

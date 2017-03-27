@@ -38,43 +38,43 @@ public class MessageRightHolder extends BaseViewHolder{
         this.mlistener = listener;
         chatText.setText(question.getQuestionText());
         if (question.getQuestionOpen() ) {
-            this.openQuestion = question;
-            setHolder(ansText1, question, 0);
-            setHolder(ansText2, question, 1);
-            setHolder(ansText3, question, 2);
-            setHolder(ansText4, question, 3);
-
-            if (!question.getSenderId().equals(UserManger.getInstance().getUserId())) {
-                ansText1.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(0).getIsRight());
-                    }
-                });
-                ansText2.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(1).getIsRight());
-                    }
-                });
-                ansText3.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(2).getIsRight());
-                    }
-                });
-                ansText4.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(3).getIsRight());
-                    }
-                });
-            }
+//            this.openQuestion = question;
+//            setHolder(ansText1, question, 0);
+//            setHolder(ansText2, question, 1);
+//            setHolder(ansText3, question, 2);
+//            setHolder(ansText4, question, 3);
+//
+//            if (!question.getSenderId().equals(UserManger.getInstance().getUserId())) {
+//                ansText1.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(0).getIsRight());
+//                    }
+//                });
+//                ansText2.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(1).getIsRight());
+//                    }
+//                });
+//                ansText3.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(2).getIsRight());
+//                    }
+//                });
+//                ansText4.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        mlistener.notifyChatForQuestionsAnswer(openQuestion.getAnswers().get(3).getIsRight());
+//                    }
+//                });
+//            }
         } else {
-            ansText1.setVisibility(View.GONE);
-            ansText2.setVisibility(View.GONE);
-            ansText3.setVisibility(View.GONE);
-            ansText4.setVisibility(View.GONE);
+//            ansText1.setVisibility(View.GONE);
+//            ansText2.setVisibility(View.GONE);
+//            ansText3.setVisibility(View.GONE);
+//            ansText4.setVisibility(View.GONE);
             if (question.getIsRightAnswer()) {
                 chatText.setText(question.getQuestionText() +" "+ getEmojiByUnicode(V_INDICATOR_UNICODE));
             } else {
@@ -82,6 +82,10 @@ public class MessageRightHolder extends BaseViewHolder{
             }
             //TODO: here we need to add the total time to answer the question and indicator if its right or worng
         }
+        ansText1.setVisibility(View.GONE);
+        ansText2.setVisibility(View.GONE);
+        ansText3.setVisibility(View.GONE);
+        ansText4.setVisibility(View.GONE);
         if (question.getSenderId().equals(UserManger.getInstance().getUserId())) {
             // TODO: here we need to decide how to align the message row
 //            chatText.setBackgroundColor(Color.BLUE);

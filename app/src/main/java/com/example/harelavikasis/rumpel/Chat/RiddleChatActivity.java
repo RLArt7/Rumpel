@@ -12,6 +12,7 @@
     import android.os.Bundle;
     import android.support.v7.widget.LinearLayoutManager;
     import android.support.v7.widget.RecyclerView;
+    import android.view.MenuItem;
     import android.view.View;
     import android.view.inputmethod.InputMethodManager;
     import android.widget.Button;
@@ -74,9 +75,11 @@
         private RecyclerChatAdapterList adapter;
         private ChatManager cManger;
         private Chat currentChat;
+
         private DatabaseReference mDatabase;
         private DatabaseReference globalDatabase;
         private DatabaseReference usersRef;
+
         private LinearLayoutManager llm = new LinearLayoutManager(this);
         private RiddleChatActivity self = this;
         private BottomSheetBehavior mBottomSheetBehavior;
@@ -87,22 +90,26 @@
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_riddle_chat);
             ButterKnife.bind(this);
-            // TODO: need to be mooved and set in the loginpage
-//            UserManger.getInstance().setUserId("helloWorld1234");
-//            UserManger.getInstance().setUserName("Harel");
-            setTitle("Name Of the Contact");
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+            Intent intent = getIntent();
+            String contactName = intent.getStringExtra("name");
+            String contactId = intent.getStringExtra("endPointId");
+            setTitle(contactName);
 
             initRecyclerView();
 
             mDatabase = FirebaseDatabase.getInstance().getReference();
             globalDatabase = FirebaseDatabase.getInstance().getReference();
-            usersRef = FirebaseDatabase.getInstance().getReference().child("users").child(UserManger.getInstance().getUserId()).child("chatIdMap");
+            usersRef = FirebaseDatabase.getInstance().getReference().child("users").child(UserManger.getInstance().getFacebookId()).child("chatIdMap");
 //            cManger = new ChatManager(this);
 
             //  TODO: to get from the intent the endpointUserId so we can
             // fetch the chat id from it and set the data
             setBottomSheet();
-            setDatabseChatHistory("jsdcjals");
+            setDatabseChatHistory(contactId);
             fetchRiddleConversation();
         }
 
@@ -158,14 +165,15 @@
         }
 
         private void setDatabseChatHistory(String endPointId) {
-            String fakeChatId = "-Kfc-jVPq8wFpi9Iplmp";
-            String fakeEndPoint = endPointId;
-            String chatId = UserManger.getInstance().getChatIdWithendPointUserId(fakeEndPoint);
+//            String fakeChatId = "-Kfc-jVPq8wFpi9Iplmp";
+            String endPoint = endPointId;
+            String chatId = UserManger.getInstance().getChatIdWithendPointUserId(endPoint);
 
             if (chatId == null)
             {
                 chatId = globalDatabase.child("chats").push().getKey();
-                UserManger.getInstance().addChatId(chatId,fakeEndPoint);
+                globalDatabase.child("users").child(endPointId).child("chatIdMap").child(UserManger.getInstance().getFacebookId()).setValue(chatId);
+                UserManger.getInstance().addChatId(chatId,endPoint);
                 usersRef.setValue(UserManger.getInstance().getChatIdMap());
             }
 
@@ -338,5 +346,17 @@
             currentChat.fetchTheOpenQuestion().closeQuestion();
             mDatabase.child("questions").setValue(currentChat.getQuestions());
             mDatabase.child("thereOpenQuestion").setValue(false);
+        }
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            switch (item.getItemId()) {
+                case android.R.id.home:
+                    // app icon in action bar clicked; goto parent activity.
+                    this.finish();
+                    return true;
+                default:
+                    return super.onOptionsItemSelected(item);
+            }
         }
     }

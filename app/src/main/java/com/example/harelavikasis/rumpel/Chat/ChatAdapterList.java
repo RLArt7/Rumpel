@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.example.harelavikasis.rumpel.Models.Answer;
 import com.example.harelavikasis.rumpel.Models.Question;
 import com.example.harelavikasis.rumpel.R;
 
@@ -47,7 +46,7 @@ public class ChatAdapterList extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
         View vi = view;
         if (vi == null)
-            vi = inflater.inflate(R.layout.chat_row, null);
+            vi = inflater.inflate(R.layout.contact_row, null);
         TextView text = (TextView) vi.findViewById(R.id.chat_text);
         TextView ansText1 = (TextView) vi.findViewById(R.id.answer_1);
         TextView ansText2 = (TextView) vi.findViewById(R.id.answer_2);

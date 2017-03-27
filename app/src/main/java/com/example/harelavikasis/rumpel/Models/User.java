@@ -13,7 +13,9 @@ public class User {
 
     private String userId;
     private String userName;
-//    private String facebookToken;
+    private String facebookId;
+
+    //    private String facebookToken;
     private Map<String,String> chatIdMap =  new HashMap<String,String>();
 
     public User(){}
@@ -21,9 +23,8 @@ public class User {
     public User(String str){
         this.userId = UserManger.getInstance().getUserId();
         this.userName = UserManger.getInstance().getUserName();
-//        this.facebookToken = UserManger.getInstance().getFacebookToken();
         this.chatIdMap = UserManger.getInstance().getChatIdMap();
-
+        this.facebookId = UserManger.getInstance().getFacebookId();
     }
 
     public String getUserId() {
@@ -42,13 +43,6 @@ public class User {
         this.userName = userName;
     }
 
-//    public String getFacebookToken() {
-//        return facebookToken;
-//    }
-//
-//    public void setFacebookToken(String facebookToken) {
-//        this.facebookToken = facebookToken;
-//    }
 
     public Map<String, String> getChatIdMap() {
         return chatIdMap;
@@ -56,5 +50,13 @@ public class User {
 
     public void setChatIdMap(Map<String, String> chatIdMap) {
         this.chatIdMap = chatIdMap;
+    }
+
+    public String getFacebookId() {
+        return facebookId;
+    }
+
+    public void setFacebookId(String facebookId) {
+        this.facebookId = facebookId;
     }
 }

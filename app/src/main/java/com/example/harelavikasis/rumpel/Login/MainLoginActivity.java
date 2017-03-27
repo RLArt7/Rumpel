@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.harelavikasis.rumpel.Chat.RiddleChatActivity;
+import com.example.harelavikasis.rumpel.ContactList.ContactListActivity;
 import com.example.harelavikasis.rumpel.Managers.UserManger;
 import com.example.harelavikasis.rumpel.Models.User;
 import com.example.harelavikasis.rumpel.QuestionsPicker.QuestionsPickerView;
@@ -17,6 +18,10 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphRequestAsyncTask;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,7 +38,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -49,6 +59,10 @@ public class MainLoginActivity extends AppCompatActivity {
     private DatabaseReference usersRef;
     private MainLoginActivity self = this;
 
+//    public static Facebook facebook = null;
+//    public static AsyncFacebookRunner mAsyncRunner = null;
+
+    private List<String> friends_list = new ArrayList<String>();
 
     @Bind(R.id.button_facebook_login)
     LoginButton loginButton;
@@ -83,21 +97,36 @@ public class MainLoginActivity extends AppCompatActivity {
                     else
                     {
                         loginButton.setVisibility(View.GONE);
+                        GraphRequestAsyncTask graphRequestAsyncTask = new GraphRequest(AccessToken.getCurrentAccessToken(),
+                                "me/friends",
+                                null,
+                                HttpMethod.GET,
+                                new GraphRequest.Callback() {
+
+                                    public void onCompleted(GraphResponse response) {
+                                        Intent intent = new Intent(self,ContactListActivity.class);
+                                        try {
+                                            JSONArray rawName = response.getJSONObject().getJSONArray("data");
+                                            intent.putExtra("jsondata", rawName.toString());
+                                            startActivity(intent);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }).executeAsync();
                     }
                     if (UserManger.getInstance().isSet()) {
-                        Intent nextScreen = new Intent(getApplicationContext(), RiddleChatActivity.class);
-                        startActivity(nextScreen);
-                        finish();
+
+//                        Intent nextScreen = new Intent(getApplicationContext(), RiddleChatActivity.class);
+//                        startActivity(nextScreen);
+//                        finish();
                     }
                 }
-//                } else {
-//                    // User is signed out
-//                    Log.d(TAG, "onAuthStateChanged:signed_out");
-//                }
             }
         };
 
         loginButton.setReadPermissions("email", "public_profile", "user_friends");
+
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -126,9 +155,10 @@ public class MainLoginActivity extends AppCompatActivity {
 
             UserManger.getInstance().setUserId(u.getUid());
             UserManger.getInstance().setUserName(u.getDisplayName());
+            UserManger.getInstance().setFacebookId(AccessToken.getCurrentAccessToken().getUserId());
 
             // get writers database reference
-            usersRef = FirebaseDatabase.getInstance().getReference().child("users").child(u.getUid());
+            usersRef = FirebaseDatabase.getInstance().getReference().child("users").child(AccessToken.getCurrentAccessToken().getUserId());
 //            usersRef.setValue(new User("null"));
             // set the data locally and remotely and update the login state.
             usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -151,9 +181,7 @@ public class MainLoginActivity extends AppCompatActivity {
                                 .toJson(new User("null")));
 
                         if (UserManger.getInstance().isSet()) {
-                            Intent nextScreen = new Intent(getApplicationContext(), RiddleChatActivity.class);
-                            startActivity(nextScreen);
-                            finish();
+
                         }
                     }
                 }
@@ -185,9 +213,25 @@ public class MainLoginActivity extends AppCompatActivity {
 //                                    Toast.LENGTH_SHORT).show();
                         }
 
-                        // ...
                     }
                 });
+        GraphRequestAsyncTask graphRequestAsyncTask = new GraphRequest(token,
+                "me/friends",
+                null,
+                HttpMethod.GET,
+                new GraphRequest.Callback() {
+
+                    public void onCompleted(GraphResponse response) {
+                        Intent intent = new Intent(self,ContactListActivity.class);
+                        try {
+                            JSONArray rawName = response.getJSONObject().getJSONArray("data");
+                            intent.putExtra("jsondata", rawName.toString());
+                            startActivity(intent);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).executeAsync();
     }
 
     @Override

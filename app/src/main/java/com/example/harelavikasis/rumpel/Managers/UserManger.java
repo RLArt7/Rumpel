@@ -46,14 +46,6 @@ public class UserManger {
         this.userName = userName;
     }
 
-//    public String getFacebookToken() {
-//        return facebookToken;
-//    }
-//
-//    public void setFacebookToken(String facebookToken) {
-//        this.facebookToken = facebookToken;
-//    }
-
     public Map<String, String> getChatIdMap() {
         return chatIdMap;
     }

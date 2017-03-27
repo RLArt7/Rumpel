@@ -169,7 +169,7 @@
             String endPoint = endPointId;
             String chatId = UserManger.getInstance().getChatIdWithendPointUserId(endPoint);
 
-            if (chatId == null)
+            if (chatId == null && UserManger.getInstance().isSet())
             {
                 chatId = globalDatabase.child("chats").push().getKey();
                 globalDatabase.child("users").child(endPointId).child("chatIdMap").child(UserManger.getInstance().getFacebookId()).setValue(chatId);

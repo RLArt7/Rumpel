@@ -43,6 +43,10 @@ public class MessageLeftHolder extends BaseViewHolder {
             setHolder(ansText2, question, 1);
             setHolder(ansText3, question, 2);
             setHolder(ansText4, question, 3);
+            ansText1.setVisibility(View.VISIBLE);
+            ansText2.setVisibility(View.VISIBLE);
+            ansText3.setVisibility(View.VISIBLE);
+            ansText4.setVisibility(View.VISIBLE);
 //            if (question.getSenderId().equals(UserManger.getInstance().getUserId())) {
                 ansText1.setOnClickListener(new View.OnClickListener() {
                     @Override

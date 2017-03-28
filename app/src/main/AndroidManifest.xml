@@ -17,39 +17,38 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
-
-        <activity android:name=".QuestionsPicker.QuestionsPickerView"
+        <activity
+            android:name=".QuestionsPicker.QuestionsPickerView"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Login.MainLoginActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-         <activity android:name=".Login.MainLoginActivity"
-         android:configChanges="orientation"
-         android:screenOrientation="portrait">
-         <intent-filter>
-         <action android:name="android.intent.action.MAIN" />
+                <meta-data
+                    android:name="com.facebook.sdk.ApplicationId"
+                    android:value="@string/facebook_app_id" />
 
-
-         <meta-data
-         android:name="com.facebook.sdk.ApplicationId"
-         android:value="@string/facebook_app_id" />
-
-
-         <category android:name="android.intent.category.LAUNCHER" />
-         </intent-filter>
-         </activity>
-
-
-         <activity android:name=".ContactList.ContactListActivity"
-         android:configChanges="orientation"
-         android:screenOrientation="portrait"></activity>
-
-
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ContactList.ContactListActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/ContactListTheme" />
+        <activity android:name=".Settings.SettingsActivity"></activity>
     </application>
 
 </manifest>

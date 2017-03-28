@@ -12,6 +12,7 @@ import com.example.harelavikasis.rumpel.Chat.RiddleChatActivity;
 import com.example.harelavikasis.rumpel.Listeners.OnContactClicked;
 import com.example.harelavikasis.rumpel.Models.Contact;
 import com.example.harelavikasis.rumpel.R;
+import com.example.harelavikasis.rumpel.Settings.SettingsActivity;
 import com.facebook.FacebookContentProvider;
 
 import org.json.JSONArray;
@@ -24,6 +25,7 @@ import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ContactListActivity extends AppCompatActivity implements OnContactClicked{
 
@@ -74,23 +76,11 @@ public class ContactListActivity extends AppCompatActivity implements OnContactC
         ButterKnife.unbind(this);
     }
 
-//    @Override
-//    public void notifyThatContactClicked(Contact contact) {
-//        Intent intent = new Intent(this,RiddleChatActivity.class);
-//        intent.putExtra("name", contact.getName());
-//        intent.putExtra("endPointId", contact.getId());
-//        startActivity(intent);
-//    }
-
-//    @Override
-//    public void onClick(View v) {
-//        int itemPosition = contactsList.getChildLayoutPosition(v);
-//        Intent intent = new Intent(this,RiddleChatActivity.class);
-//        Contact contact = friends.get(itemPosition);
-//        intent.putExtra("name", contact.getName());
-//        intent.putExtra("endPointId", contact.getId());
-//        startActivity(intent);
-//    }
+    @OnClick(R.id.settings_btn)
+    public void onSettingsClick() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
 
     @Override
     public void notifyThatContactClicked(Contact contact) {

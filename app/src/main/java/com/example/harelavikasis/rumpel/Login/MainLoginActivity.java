@@ -1,11 +1,14 @@
 package com.example.harelavikasis.rumpel.Login;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.harelavikasis.rumpel.Chat.RiddleChatActivity;
@@ -24,6 +27,8 @@ import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -43,16 +48,18 @@ import org.json.JSONException;
 
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import es.dmoral.prefs.Prefs;
 
-public class MainLoginActivity extends AppCompatActivity {
-    private static final String TAG = "RUMPEL";
+public class MainLoginActivity extends AppCompatActivity implements FacebookCallback<LoginResult>{
+    public static final String TAG = "RUMPEL";
     public static final String KEY_USER = "USER";
-    private static final java.lang.String FIRST_TIME = "FIRST_TIME";
+    public static final String FIRST_TIME = "FIRST_TIME";
 
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth mAuth;
@@ -67,9 +74,11 @@ public class MainLoginActivity extends AppCompatActivity {
     @Bind(R.id.button_facebook_login)
     LoginButton loginButton;
 
-    private CallbackManager mCallbackManager = CallbackManager.Factory.create();
-//    LoginButton loginButton = (LoginButton) findViewById(R.id.button_facebook_login);
+    @Bind(R.id.sign_in_text)
+    TextView editText;
 
+    private CallbackManager mCallbackManager;
+//    LoginButton loginButton = (LoginButton) findViewById(R.id.button_facebook_login);
 
 
     @Override
@@ -77,7 +86,7 @@ public class MainLoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_login);
         ButterKnife.bind(this);
-
+        mCallbackManager = CallbackManager.Factory.create();
         mAuth = FirebaseAuth.getInstance();
 
 
@@ -90,13 +99,11 @@ public class MainLoginActivity extends AppCompatActivity {
                     setAuthWithOAuth(user);
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                    if (!Prefs.with(self).readBoolean(FIRST_TIME))
-                    {
-                        Prefs.with(self).writeBoolean(FIRST_TIME,true);
-                    }
-                    else
-                    {
+                    if (!Prefs.with(self).readBoolean(FIRST_TIME)) {
+                        Prefs.with(self).writeBoolean(FIRST_TIME, true);
+                    } else {
                         loginButton.setVisibility(View.GONE);
+                        editText.setText("Welcome Back");
                         GraphRequestAsyncTask graphRequestAsyncTask = new GraphRequest(AccessToken.getCurrentAccessToken(),
                                 "me/friends",
                                 null,
@@ -104,11 +111,14 @@ public class MainLoginActivity extends AppCompatActivity {
                                 new GraphRequest.Callback() {
 
                                     public void onCompleted(GraphResponse response) {
-                                        Intent intent = new Intent(self,ContactListActivity.class);
+                                        Intent intent = new Intent(self, ContactListActivity.class);
                                         try {
-                                            JSONArray rawName = response.getJSONObject().getJSONArray("data");
-                                            intent.putExtra("jsondata", rawName.toString());
-                                            startActivity(intent);
+                                            if (response.getJSONObject() != null) {
+                                                JSONArray rawName = response.getJSONObject().getJSONArray("data");
+                                                intent.putExtra("jsondata", rawName.toString());
+                                                startActivity(intent);
+                                                finish();
+                                            }
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
@@ -117,36 +127,11 @@ public class MainLoginActivity extends AppCompatActivity {
                     }
                     if (UserManger.getInstance().isSet()) {
 
-//                        Intent nextScreen = new Intent(getApplicationContext(), RiddleChatActivity.class);
-//                        startActivity(nextScreen);
-//                        finish();
                     }
                 }
             }
         };
 
-        loginButton.setReadPermissions("email", "public_profile", "user_friends");
-
-        loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.d(TAG, "facebook:onSuccess:" + loginResult);
-
-                handleFacebookAccessToken(loginResult.getAccessToken());
-            }
-
-            @Override
-            public void onCancel() {
-                Log.d(TAG, "facebook:onCancel");
-                // ...
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                Log.d(TAG, "facebook:onError", error);
-                // ...
-            }
-        });
     }
 
     private void setAuthWithOAuth(FirebaseUser u) {
@@ -177,7 +162,7 @@ public class MainLoginActivity extends AppCompatActivity {
                         usersRef.setValue(new User("null"));
 
                         // save the user to shared preferences.
-                        Prefs.with(self).write(KEY_USER,new Gson()
+                        Prefs.with(self).write(KEY_USER, new Gson()
                                 .toJson(new User("null")));
 
                         if (UserManger.getInstance().isSet()) {
@@ -222,11 +207,12 @@ public class MainLoginActivity extends AppCompatActivity {
                 new GraphRequest.Callback() {
 
                     public void onCompleted(GraphResponse response) {
-                        Intent intent = new Intent(self,ContactListActivity.class);
+                        Intent intent = new Intent(self, ContactListActivity.class);
                         try {
                             JSONArray rawName = response.getJSONObject().getJSONArray("data");
                             intent.putExtra("jsondata", rawName.toString());
                             startActivity(intent);
+                            finish();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -276,5 +262,45 @@ public class MainLoginActivity extends AppCompatActivity {
 //        }
     }
 
+    @OnClick(R.id.button_facebook_login)
+    public void onLoginClick() {
+        if (isGooglePlayServicesAvailable(this)) {
+            mCallbackManager = CallbackManager.Factory.create();
+            loginButton.setReadPermissions("email", "public_profile", "user_friends");
+            loginButton.registerCallback(mCallbackManager, this);
+            loginButton.performClick();
+            loginButton.setEnabled(false);
+        }
+    }
 
+    private boolean isGooglePlayServicesAvailable(Activity activity) {
+        GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+        int status = googleApiAvailability.isGooglePlayServicesAvailable(activity);
+        if(status != ConnectionResult.SUCCESS) {
+            if(googleApiAvailability.isUserResolvableError(status)) {
+                googleApiAvailability.getErrorDialog(activity, status, 2404).show();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onSuccess(LoginResult loginResult) {
+        Log.d(TAG, "facebook:onSuccess:" + loginResult);
+
+        handleFacebookAccessToken(loginResult.getAccessToken());
+    }
+
+    @Override
+    public void onCancel() {
+        Log.d(TAG, "facebook:onCancel:");
+
+    }
+
+    @Override
+    public void onError(FacebookException error) {
+        Log.d(TAG, "facebook:onError:");
+
+    }
 }

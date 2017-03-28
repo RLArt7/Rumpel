@@ -3,7 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="15dp"
+    android:layout_marginTop="2dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     app:cardCornerRadius="5dp"
@@ -23,9 +23,10 @@
             android:id="@+id/contact_list_row"
             android:background="@color/blue_100"
             android:text = "aaaaaaa"
-            android:textSize="24sp"
+            android:textSize="27sp"
             android:textStyle="normal|bold"
             android:fontFamily="sans-serif"
+            android:paddingLeft="10dp"
            />
     <!--</LinearLayout>-->
 

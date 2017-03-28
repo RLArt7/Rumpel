@@ -44,6 +44,7 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.1.0'
     testCompile 'junit:junit:4.12'
     compile 'com.github.dimorinny:floating-text-button:0.0.2'
+    compile 'com.github.GwonHyeok:StickySwitch:0.0.8'
 }
 
 apply plugin: 'com.google.gms.google-services'

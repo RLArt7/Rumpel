@@ -18,4 +18,35 @@
         android:layout_gravity="center_horizontal|bottom"
         app:floating_title_color="@android:color/white"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notifications"
+        android:textSize="25dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="10dp"
+
+        />
+
+    <io.ghyeok.stickyswitch.widget.StickySwitch
+        android:layout_gravity="top|right"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:id="@+id/sticky_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_alignParentRight="true"
+        app:iconPadding="10dp"
+        app:iconSize="22dp"
+        app:leftIcon="@drawable/ic_button_on"
+        app:leftText="On"
+        app:rightIcon="@drawable/ic_button_off"
+        app:rightText="Off"
+        app:selectedTextSize="20sp"
+        app:sliderBackgroundColor="@color/grey_600"
+        app:switchColor="@color/blue_700"
+        app:textColor="@color/black"
+        app:textSize="16sp" />
+
 </android.support.design.widget.CoordinatorLayout>

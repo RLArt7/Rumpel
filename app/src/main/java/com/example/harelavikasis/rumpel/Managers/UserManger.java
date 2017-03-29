@@ -1,5 +1,7 @@
 package com.example.harelavikasis.rumpel.Managers;
 
+import com.example.harelavikasis.rumpel.Models.User;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +22,13 @@ public class UserManger {
     }
 
     private UserManger() {
+    }
+
+    public void setWithUser(User user){
+        this.userId = user.getUserId();
+        this.userName = user.getUserName();
+        this.chatIdMap = user.getChatIdMap();
+        this.facebookId = user.getFacebookId();
     }
 
     public static UserManger getOurInstance() {

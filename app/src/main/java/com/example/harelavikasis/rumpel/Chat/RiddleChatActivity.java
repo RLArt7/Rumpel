@@ -20,6 +20,7 @@
     import android.widget.ImageButton;
     import android.widget.RadioButton;
 
+    import com.example.harelavikasis.rumpel.Login.MainLoginActivity;
     import com.example.harelavikasis.rumpel.Managers.ChatManager;
     import com.example.harelavikasis.rumpel.Models.Answer;
     import com.example.harelavikasis.rumpel.Models.Chat;
@@ -34,12 +35,14 @@
     import com.google.firebase.database.DatabaseReference;
     import com.google.firebase.database.FirebaseDatabase;
     import com.google.firebase.database.ValueEventListener;
+    import com.google.gson.Gson;
 
     import java.util.ArrayList;
     import java.util.List;
 
     import butterknife.Bind;
     import butterknife.ButterKnife;
+    import es.dmoral.prefs.Prefs;
 
     public class RiddleChatActivity extends AppCompatActivity implements OnAnswerClicked {
 
@@ -103,11 +106,20 @@
 
             mDatabase = FirebaseDatabase.getInstance().getReference();
             globalDatabase = FirebaseDatabase.getInstance().getReference();
-            usersRef = FirebaseDatabase.getInstance().getReference().child("users").child(UserManger.getInstance().getFacebookId()).child("chatIdMap");
+            usersRef = FirebaseDatabase.getInstance().getReference();
+            String facebookId = UserManger.getInstance().getFacebookId();
+            if (facebookId == null || facebookId.isEmpty())
+            {
+                User user = new Gson().fromJson(Prefs.with(this).read(MainLoginActivity.KEY_USER),User.class);
+                if (user != null)
+                {
+                    UserManger.getInstance().setWithUser(user);
+                    facebookId = user.getFacebookId();
+                }
+            }
+            usersRef = usersRef.child("users").child(facebookId).child("chatIdMap");
 //            cManger = new ChatManager(this);
 
-            //  TODO: to get from the intent the endpointUserId so we can
-            // fetch the chat id from it and set the data
             setBottomSheet();
             setDatabseChatHistory(contactId);
             fetchRiddleConversation();
@@ -129,18 +141,10 @@
                         tempSlideOffset = 0;
                         if (!currentChat.isThereOpenQuestion()) {
                             addQuestionButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.blue_800)));
-//                            addQuestionButton.setVisibility(View.VISIBLE);
                         }
-//                        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-//                        imm.hideSoftInputFromWindow(questionText.getWindowToken(), 0);
                     }
                     if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-//                        answer4Text.setFocusableInTouchMode(true);
-//                        answer4Text.requestFocus();
                         tempSlideOffset = 1;
-//                        final InputMethodManager inputMethodManager = (InputMethodManager) self.getSystemService(Context.INPUT_METHOD_SERVICE);
-//                        inputMethodManager.showSoftInput(answer4Text, InputMethodManager.SHOW_IMPLICIT);
-
                     }
                 }
 

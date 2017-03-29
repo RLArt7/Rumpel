@@ -1,6 +1,7 @@
 package com.example.harelavikasis.rumpel.Models;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,8 +15,8 @@ public class Question implements Serializable {
     private String questionText;
     private String senderId;
     private List<Answer> answers = new ArrayList<>();
-    private Date initialTime;
-    int timeToAnswer;
+    private long initialTime;
+    private long timeToAnswer;
 
     private Boolean isRightAnswer = false;
     private Boolean isQuestionOpen = true;
@@ -25,7 +26,6 @@ public class Question implements Serializable {
         this.id = id;
         this.questionText = questText;
         this.answers = answers;
-        initialTime = new Date();
     }
 
     public Question(String id, String questText, int timeToAnswer) {
@@ -42,11 +42,11 @@ public class Question implements Serializable {
         return isRightAnswer;
     }
 
-    public int getTimeToAnswer() {
+    public long getTimeToAnswer() {
         return timeToAnswer;
     }
 
-    public void setTimeToAnswer(int timeToAnswer) {
+    public void setTimeToAnswer(long timeToAnswer) {
         this.timeToAnswer = timeToAnswer;
     }
 
@@ -76,6 +76,8 @@ public class Question implements Serializable {
     }
 
     public void closeQuestion() {
+        long nowTime = new Date().getTime();
+        this.timeToAnswer = nowTime - initialTime;
         this.isQuestionOpen = false;
     }
 
@@ -91,7 +93,10 @@ public class Question implements Serializable {
 //    public Boolean isQuestionOpen() {
 //        return isQuestionOpen;
 //    }
-
+    public void initCreationTime()
+    {
+        this.initialTime = new Date().getTime();
+    }
     public String getSenderId() {
         return senderId;
     }
@@ -106,6 +111,14 @@ public class Question implements Serializable {
 
     public void setQuestionOpen(Boolean questionOpen) {
         isQuestionOpen = questionOpen;
+    }
+
+    public long getInitialTime() {
+        return initialTime;
+    }
+
+    public void setInitialTime(long initialTime) {
+        this.initialTime = initialTime;
     }
 
     @Override

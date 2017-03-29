@@ -114,6 +114,7 @@ public class QuestionsPickerView extends AppCompatActivity {
         Question selectedQuestions = questions.get(index);
         selectedQuestions.setSenderId(UserManger.getInstance().getUserId());
         selectedQuestions.setQuestionOpen(true);
+        selectedQuestions.initCreationTime();
         currentChat.addQuestion(selectedQuestions);
         mDatabase.child("questions").setValue(currentChat.getQuestions());
         mDatabase.child("thereOpenQuestion").setValue(true);

@@ -1,6 +1,7 @@
 package com.example.harelavikasis.rumpel.ViewHolders;
 
 import android.graphics.Color;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -75,10 +76,12 @@ public class MessageRightHolder extends BaseViewHolder{
 //            ansText2.setVisibility(View.GONE);
 //            ansText3.setVisibility(View.GONE);
 //            ansText4.setVisibility(View.GONE);
+            long timeToAnswer = question.getTimeToAnswer();
+            String time = (String) DateFormat.format("mm:ss", timeToAnswer);
             if (question.getIsRightAnswer()) {
-                chatText.setText(question.getQuestionText() +" "+ getEmojiByUnicode(V_INDICATOR_UNICODE));
+                chatText.setText(question.getQuestionText() +" "+ getEmojiByUnicode(V_INDICATOR_UNICODE) + " " +time);
             } else {
-                chatText.setText(question.getQuestionText() +" "+ getEmojiByUnicode(X_INDICATOR_UNICODE));
+                chatText.setText(question.getQuestionText() +" "+ getEmojiByUnicode(X_INDICATOR_UNICODE) + " " +time);
             }
             //TODO: here we need to add the total time to answer the question and indicator if its right or worng
         }

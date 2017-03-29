@@ -328,7 +328,7 @@
             Question q1 = new Question(key1 , questionText.getText().toString(), answers);
             globalDatabase.child("questions").child(q1.getId()).setValue(q1);
             q1.setSenderId(UserManger.getInstance().getUserId());
-
+            q1.initCreationTime();
             if (currentChat.fetchTheOpenQuestion() != null)  currentChat.fetchTheOpenQuestion().closeQuestion();
             currentChat.addQuestion(q1);
             mDatabase.child("questions").setValue(currentChat.getQuestions());

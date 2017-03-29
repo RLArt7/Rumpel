@@ -14,6 +14,7 @@ public class UserManger {
     private String userName;
     private Boolean isSet = false;
     private String facebookId;
+    private String userToken;
 
     private Map<String,String> chatIdMap =  new HashMap<String,String>();
 
@@ -82,5 +83,13 @@ public class UserManger {
 
     public void setFacebookId(String facebookId) {
         this.facebookId = facebookId;
+    }
+
+    public String getUserToken() {
+        return userToken;
+    }
+
+    public void setUserToken(String userToken) {
+        this.userToken = userToken;
     }
 }

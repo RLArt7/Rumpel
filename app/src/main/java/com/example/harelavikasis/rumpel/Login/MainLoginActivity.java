@@ -37,6 +37,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -136,6 +137,7 @@ public class MainLoginActivity extends AppCompatActivity implements FacebookCall
             UserManger.getInstance().setUserId(u.getUid());
             UserManger.getInstance().setUserName(u.getDisplayName());
             UserManger.getInstance().setFacebookId(AccessToken.getCurrentAccessToken().getUserId());
+            UserManger.getInstance().setUserToken(FirebaseInstanceId.getInstance().getToken());
 
             // get writers database reference
             usersRef = FirebaseDatabase.getInstance().getReference().child("users").child(AccessToken.getCurrentAccessToken().getUserId());

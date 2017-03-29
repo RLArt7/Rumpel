@@ -3,7 +3,6 @@
     import android.content.Context;
     import android.content.Intent;
     import android.content.res.ColorStateList;
-    import android.graphics.Color;
     import android.os.Build;
     import android.support.annotation.RequiresApi;
     import android.support.design.widget.BottomSheetBehavior;
@@ -15,9 +14,7 @@
     import android.view.MenuItem;
     import android.view.View;
     import android.view.inputmethod.InputMethodManager;
-    import android.widget.Button;
     import android.widget.EditText;
-    import android.widget.ImageButton;
     import android.widget.RadioButton;
 
     import com.example.harelavikasis.rumpel.Login.MainLoginActivity;
@@ -27,6 +24,7 @@
     import com.example.harelavikasis.rumpel.Models.Question;
     import com.example.harelavikasis.rumpel.Managers.UserManger;
     import com.example.harelavikasis.rumpel.Models.User;
+    import com.example.harelavikasis.rumpel.PushNotifications.PushManager;
     import com.example.harelavikasis.rumpel.QuestionsPicker.QuestionsPickerView;
     import com.example.harelavikasis.rumpel.R;
     import com.example.harelavikasis.rumpel.Listeners.OnAnswerClicked;
@@ -78,10 +76,12 @@
         private RecyclerChatAdapterList adapter;
         private ChatManager cManger;
         private Chat currentChat;
+        private User contact;
 
         private DatabaseReference mDatabase;
         private DatabaseReference globalDatabase;
         private DatabaseReference usersRef;
+        private DatabaseReference contactRef;
 
         private LinearLayoutManager llm = new LinearLayoutManager(this);
         private RiddleChatActivity self = this;
@@ -107,6 +107,7 @@
             mDatabase = FirebaseDatabase.getInstance().getReference();
             globalDatabase = FirebaseDatabase.getInstance().getReference();
             usersRef = FirebaseDatabase.getInstance().getReference();
+            contactRef = FirebaseDatabase.getInstance().getReference();
             String facebookId = UserManger.getInstance().getFacebookId();
             if (facebookId == null || facebookId.isEmpty())
             {
@@ -118,11 +119,26 @@
                 }
             }
             usersRef = usersRef.child("users").child(facebookId).child("chatIdMap");
+            contactRef = contactRef.child("users").child(contactId);
 //            cManger = new ChatManager(this);
 
+            fetchContactInfo();
             setBottomSheet();
             setDatabseChatHistory(contactId);
             fetchRiddleConversation();
+
+        }
+
+        private void fetchContactInfo() {
+            contactRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    contact =  dataSnapshot.getValue(User.class);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {}
+            });
         }
 
         private void setBottomSheet() {
@@ -261,7 +277,8 @@
         }
         public void getQuestionFromPool(View v) {
             Intent nextScreen = new Intent(getApplicationContext(), QuestionsPickerView.class);
-            nextScreen.putExtra("chatId", currentChat.getId()); //Optional parameters
+            nextScreen.putExtra("chatId", currentChat.getId());
+            nextScreen.putExtra("contactToken", contact.getUserToken());
             startActivity(nextScreen);
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
@@ -333,6 +350,8 @@
             currentChat.addQuestion(q1);
             mDatabase.child("questions").setValue(currentChat.getQuestions());
             mDatabase.child("thereOpenQuestion").setValue(true);
+            PushManager pmanager = new PushManager(contact.getUserToken(),UserManger.getInstance().getUserName() + "Sent you a Riddle");
+            pmanager.sendPush();
             emptyAllFields();
         }
 

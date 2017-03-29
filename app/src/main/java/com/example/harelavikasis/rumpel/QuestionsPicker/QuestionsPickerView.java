@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.example.harelavikasis.rumpel.Managers.UserManger;
 import com.example.harelavikasis.rumpel.Models.Chat;
 import com.example.harelavikasis.rumpel.Models.Question;
+import com.example.harelavikasis.rumpel.PushNotifications.PushManager;
 import com.example.harelavikasis.rumpel.R;
 import com.google.android.gms.games.internal.constants.QuestState;
 import com.google.firebase.database.DataSnapshot;
@@ -37,6 +38,7 @@ public class QuestionsPickerView extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private DatabaseReference globalDatabase;
     private Chat currentChat;
+    private String contactToken;
 
     private List<Question> questions = new ArrayList<Question>();
     @Override
@@ -51,6 +53,7 @@ public class QuestionsPickerView extends AppCompatActivity {
 
         Intent intent = getIntent();
         String chatId = intent.getStringExtra("chatId");
+        contactToken = intent.getStringExtra("contactToken");
 
         mDatabase = FirebaseDatabase.getInstance().getReference("chats").child(chatId);
         globalDatabase = FirebaseDatabase.getInstance().getReference("questions");
@@ -118,6 +121,8 @@ public class QuestionsPickerView extends AppCompatActivity {
         currentChat.addQuestion(selectedQuestions);
         mDatabase.child("questions").setValue(currentChat.getQuestions());
         mDatabase.child("thereOpenQuestion").setValue(true);
+        PushManager pmanager = new PushManager(contactToken,UserManger.getInstance().getUserName() + "Sent you a Riddle");
+        pmanager.sendPush();
         finish();
     }
 

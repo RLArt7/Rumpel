@@ -7,15 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.harelavikasis.rumpel.Chat.RiddleChatActivity;
 import com.example.harelavikasis.rumpel.ContactList.ContactListActivity;
 import com.example.harelavikasis.rumpel.Managers.UserManger;
 import com.example.harelavikasis.rumpel.Models.User;
-import com.example.harelavikasis.rumpel.QuestionsPicker.QuestionsPickerView;
 import com.example.harelavikasis.rumpel.R;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -46,9 +42,7 @@ import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.Bind;
@@ -60,6 +54,7 @@ public class MainLoginActivity extends AppCompatActivity implements FacebookCall
     public static final String TAG = "RUMPEL";
     public static final String KEY_USER = "USER";
     public static final String FIRST_TIME = "FIRST_TIME";
+    public static final String NOTIFICATION_STATUS = "NOTIFICATIONS_STATUS";
 
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth mAuth;
@@ -289,6 +284,7 @@ public class MainLoginActivity extends AppCompatActivity implements FacebookCall
     public void onSuccess(LoginResult loginResult) {
         Log.d(TAG, "facebook:onSuccess:" + loginResult);
 
+        Prefs.with(self).writeBoolean(NOTIFICATION_STATUS, true);
         handleFacebookAccessToken(loginResult.getAccessToken());
     }
 

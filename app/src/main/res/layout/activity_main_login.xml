@@ -9,15 +9,18 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/ic_background"
     tools:context="com.example.harelavikasis.rumpel.Login.MainLoginActivity">
+
 
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcom To Rumpel"
+        android:text="Welcome To Rumpel"
+        android:textColor="@android:color/white"
         android:id="@+id/welcom_header"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="20dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:textSize="30sp" />
@@ -27,6 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="sign in"
+        android:textColor="@android:color/white"
         android:id="@+id/sign_in_text"
         android:layout_marginBottom="-15dp"
         android:layout_centerHorizontal="true"

@@ -1,12 +1,14 @@
 package com.example.harelavikasis.rumpel.Login;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.harelavikasis.rumpel.ContactList.ContactListActivity;
@@ -66,8 +68,8 @@ public class MainLoginActivity extends AppCompatActivity implements FacebookCall
     private DatabaseReference usersRef;
     private MainLoginActivity self = this;
     private Boolean isIntentAlready = false;
-    private AccessToken mToken;
     private String jsondata;
+    private ProgressDialog mDialog;
 //    public static Facebook facebook = null;
 //    public static AsyncFacebookRunner mAsyncRunner = null;
 
@@ -80,6 +82,7 @@ public class MainLoginActivity extends AppCompatActivity implements FacebookCall
     TextView editText;
 
     private CallbackManager mCallbackManager;
+    private boolean isFromPush;
 //    LoginButton loginButton = (LoginButton) findViewById(R.id.button_facebook_login);
 
 
@@ -90,6 +93,15 @@ public class MainLoginActivity extends AppCompatActivity implements FacebookCall
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
         FirebaseInstanceId.getInstance().getToken();
+        Intent intent = getIntent();
+        isFromPush = intent.getBooleanExtra("fromPush",false);
+        if (isFromPush){
+            UserManger.getInstance().resetNotifyContactListIsReady();
+            UserManger.getInstance().setUserName(null);
+        }
+        UserManger.getInstance().resetItHappenAlready(false);
+
+
         fetchUserFromPrefs();
         mCallbackManager = CallbackManager.Factory.create();
         mAuth = FirebaseAuth.getInstance();
@@ -100,6 +112,8 @@ public class MainLoginActivity extends AppCompatActivity implements FacebookCall
                 FirebaseUser user = firebaseAuth.getCurrentUser();
 
                 if (user != null) {
+                    mDialog = ProgressDialog.show(self, "Loading please Wait",
+                            "Fetch User Info..", true);
                     setAuthWithOAuth(user);
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
@@ -108,8 +122,7 @@ public class MainLoginActivity extends AppCompatActivity implements FacebookCall
                     } else {
                         loginButton.setVisibility(View.GONE);
                         editText.setText("Welcome Back");
-//                        if (!isIntentAlready) {
-//                            isIntentAlready = true;
+
                             GraphRequestAsyncTask graphRequestAsyncTask = new GraphRequest(AccessToken.getCurrentAccessToken(),
                                     "me/friends",
                                     null,
@@ -144,14 +157,15 @@ public class MainLoginActivity extends AppCompatActivity implements FacebookCall
         if (UserManger.getInstance().getUserName() == null)
         {
             String json = Prefs.with(this).read(KEY_USER);
-            UserManger.getInstance().setWithUser(new Gson().fromJson(json, User.class));
+            if (!json.isEmpty()) {
+                UserManger.getInstance().setWithUser(new Gson().fromJson(json, User.class));
+            }
         }
     }
 
     private void setAuthWithOAuth(FirebaseUser u) {
         if (AccessToken.getCurrentAccessToken() != null) {
             // build writer object from firebase user.
-            this.mToken = AccessToken.getCurrentAccessToken();
             UserManger.getInstance().setUserId(u.getUid());
             UserManger.getInstance().setUserName(u.getDisplayName());
             UserManger.getInstance().setFacebookId(AccessToken.getCurrentAccessToken().getUserId());
@@ -159,7 +173,6 @@ public class MainLoginActivity extends AppCompatActivity implements FacebookCall
 
             // get writers database reference
             usersRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_USERS).child(AccessToken.getCurrentAccessToken().getUserId());
-//            usersRef.setValue(new User("null"));
             // set the data locally and remotely and update the login state.
             usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -215,34 +228,13 @@ public class MainLoginActivity extends AppCompatActivity implements FacebookCall
 
                     }
                 });
-        if (!isIntentAlready) {
-            isIntentAlready = true;
-//            GraphRequestAsyncTask graphRequestAsyncTask = new GraphRequest(token,
-//                    "me/friends",
-//                    null,
-//                    HttpMethod.GET,
-//                    new GraphRequest.Callback() {
-//
-//                        public void onCompleted(GraphResponse response) {
-//                            Intent intent = new Intent(self, ContactListActivity.class);
-//                            try {
-//                                //second
-//                                JSONArray rawName = response.getJSONObject().getJSONArray("data");
-//                                intent.putExtra("jsondata", rawName.toString());
-//                                startActivity(intent);
-//                                finish();
-//                            } catch (JSONException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    }).executeAsync();
-        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
+        UserManger.getInstance().resetNotifyContactListIsReady();
     }
 
     @Override
@@ -309,7 +301,6 @@ public class MainLoginActivity extends AppCompatActivity implements FacebookCall
         Log.d(TAG, "facebook:onSuccess:" + loginResult);
 
         Prefs.with(self).writeBoolean(NOTIFICATION_STATUS, true);
-        this.mToken = loginResult.getAccessToken();
         handleFacebookAccessToken(loginResult.getAccessToken());
     }
 
@@ -327,8 +318,11 @@ public class MainLoginActivity extends AppCompatActivity implements FacebookCall
 
     @Subscribe
     public void userReadyEvent(UserReadyEvent event){
+        mDialog.dismiss();
         Intent intent = new Intent(self, ContactListActivity.class);
         intent.putExtra("jsondata", jsondata);
+        if(isFromPush)
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
     }

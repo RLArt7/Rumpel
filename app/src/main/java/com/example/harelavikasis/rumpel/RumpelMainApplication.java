@@ -9,7 +9,7 @@ import com.google.firebase.FirebaseApp;
  * Created by harelavikasis on 14/03/2017.
  */
 
-public class RumpleMainApplication extends Application {
+public class RumpelMainApplication extends Application {
 
     @Override
     public void onCreate() {

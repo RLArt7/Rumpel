@@ -62,8 +62,10 @@ public class ContactListActivity extends AppCompatActivity implements OnContactC
         JSONArray friendslist;
         try {
             friendslist = new JSONArray(jsondata);
-            for (int l=0; l < friendslist.length(); l++) {
-                friends.add(new Contact(friendslist.getJSONObject(l).getString("name"),friendslist.getJSONObject(l).getString("id")));
+            if (friendslist != null) {
+                for (int l = 0; l < friendslist.length(); l++) {
+                    friends.add(new Contact(friendslist.getJSONObject(l).getString("name"), friendslist.getJSONObject(l).getString("id")));
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();

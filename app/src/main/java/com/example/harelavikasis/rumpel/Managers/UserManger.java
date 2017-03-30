@@ -57,7 +57,9 @@ public class UserManger {
     }
 
 
-
+    public void resetItHappenAlready(Boolean bool){
+        this.itHappenAlready = bool;
+    }
     public String getUserName() {
         return userName;
     }
@@ -112,6 +114,11 @@ public class UserManger {
     {
         this.contactListIsReady = true;
         checkIfUserSet();
+    }
+
+    public void resetNotifyContactListIsReady()
+    {
+        this.contactListIsReady = false;
     }
     private void checkIfUserSet() {
         if (userToken == null || facebookId == null || userName == null || userId == null || !this.contactListIsReady)

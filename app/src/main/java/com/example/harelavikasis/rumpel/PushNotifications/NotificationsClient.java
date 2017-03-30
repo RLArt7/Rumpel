@@ -45,11 +45,11 @@ public class NotificationsClient {
     public void sendMsgPushNotification(PushNotificationObject data) {
         mNotificationsService.sendPushNotification(data).enqueue(new Callback<Object>() {
             @Override public void onResponse(Call<Object> call, Response<Object> response) {
-                Log.d(TAG, "sendMsgPushNotification onResponse: counter: " + response.body() !=null ? response.body().toString() : "");
+//                Log.d(TAG, "sendMsgPushNotification onResponse: counter: " + response.body() !=null ? response.body().toString() : "");
             }
 
             @Override public void onFailure(Call<Object> call, Throwable t) {
-                Log.e(TAG, "sendMsgPushNotification onFailure: counter: ");
+//                Log.e(TAG, "sendMsgPushNotification onFailure: counter: ");
             }
         });
     }

@@ -13,6 +13,7 @@ import com.example.harelavikasis.rumpel.ContactList.ContactListActivity;
 import com.example.harelavikasis.rumpel.Managers.UserManger;
 import com.example.harelavikasis.rumpel.Models.User;
 import com.example.harelavikasis.rumpel.R;
+import com.example.harelavikasis.rumpel.Utils.Constants;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -40,12 +41,15 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.harelavikasis.rumpel.Events.UserReadyEvent;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -61,7 +65,9 @@ public class MainLoginActivity extends AppCompatActivity implements FacebookCall
     private FirebaseAuth mAuth;
     private DatabaseReference usersRef;
     private MainLoginActivity self = this;
-
+    private Boolean isIntentAlready = false;
+    private AccessToken mToken;
+    private String jsondata;
 //    public static Facebook facebook = null;
 //    public static AsyncFacebookRunner mAsyncRunner = null;
 
@@ -82,9 +88,10 @@ public class MainLoginActivity extends AppCompatActivity implements FacebookCall
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_login);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
+        FirebaseInstanceId.getInstance().getToken();
         mCallbackManager = CallbackManager.Factory.create();
         mAuth = FirebaseAuth.getInstance();
-
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -100,26 +107,28 @@ public class MainLoginActivity extends AppCompatActivity implements FacebookCall
                     } else {
                         loginButton.setVisibility(View.GONE);
                         editText.setText("Welcome Back");
-                        GraphRequestAsyncTask graphRequestAsyncTask = new GraphRequest(AccessToken.getCurrentAccessToken(),
-                                "me/friends",
-                                null,
-                                HttpMethod.GET,
-                                new GraphRequest.Callback() {
+//                        if (!isIntentAlready) {
+//                            isIntentAlready = true;
+                            GraphRequestAsyncTask graphRequestAsyncTask = new GraphRequest(AccessToken.getCurrentAccessToken(),
+                                    "me/friends",
+                                    null,
+                                    HttpMethod.GET,
+                                    new GraphRequest.Callback() {
 
-                                    public void onCompleted(GraphResponse response) {
-                                        Intent intent = new Intent(self, ContactListActivity.class);
-                                        try {
-                                            if (response.getJSONObject() != null) {
-                                                JSONArray rawName = response.getJSONObject().getJSONArray("data");
-                                                intent.putExtra("jsondata", rawName.toString());
-                                                startActivity(intent);
-                                                finish();
+                                        public void onCompleted(GraphResponse response) {
+                                            try {
+                                                //first
+                                                if (response.getJSONObject() != null) {
+                                                    JSONArray rawName = response.getJSONObject().getJSONArray("data");
+                                                    jsondata = rawName.toString();
+                                                    UserManger.getInstance().notifyContactListIsready();
+                                                }
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
                                             }
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
                                         }
-                                    }
-                                }).executeAsync();
+                                    }).executeAsync();
+//                        }
                     }
                     if (UserManger.getInstance().isSet()) {
 
@@ -133,14 +142,14 @@ public class MainLoginActivity extends AppCompatActivity implements FacebookCall
     private void setAuthWithOAuth(FirebaseUser u) {
         if (AccessToken.getCurrentAccessToken() != null) {
             // build writer object from firebase user.
-
+            this.mToken = AccessToken.getCurrentAccessToken();
             UserManger.getInstance().setUserId(u.getUid());
             UserManger.getInstance().setUserName(u.getDisplayName());
             UserManger.getInstance().setFacebookId(AccessToken.getCurrentAccessToken().getUserId());
             UserManger.getInstance().setUserToken(FirebaseInstanceId.getInstance().getToken());
 
             // get writers database reference
-            usersRef = FirebaseDatabase.getInstance().getReference().child("users").child(AccessToken.getCurrentAccessToken().getUserId());
+            usersRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_USERS).child(AccessToken.getCurrentAccessToken().getUserId());
 //            usersRef.setValue(new User("null"));
             // set the data locally and remotely and update the login state.
             usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -197,24 +206,28 @@ public class MainLoginActivity extends AppCompatActivity implements FacebookCall
 
                     }
                 });
-        GraphRequestAsyncTask graphRequestAsyncTask = new GraphRequest(token,
-                "me/friends",
-                null,
-                HttpMethod.GET,
-                new GraphRequest.Callback() {
-
-                    public void onCompleted(GraphResponse response) {
-                        Intent intent = new Intent(self, ContactListActivity.class);
-                        try {
-                            JSONArray rawName = response.getJSONObject().getJSONArray("data");
-                            intent.putExtra("jsondata", rawName.toString());
-                            startActivity(intent);
-                            finish();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }).executeAsync();
+        if (!isIntentAlready) {
+            isIntentAlready = true;
+//            GraphRequestAsyncTask graphRequestAsyncTask = new GraphRequest(token,
+//                    "me/friends",
+//                    null,
+//                    HttpMethod.GET,
+//                    new GraphRequest.Callback() {
+//
+//                        public void onCompleted(GraphResponse response) {
+//                            Intent intent = new Intent(self, ContactListActivity.class);
+//                            try {
+//                                //second
+//                                JSONArray rawName = response.getJSONObject().getJSONArray("data");
+//                                intent.putExtra("jsondata", rawName.toString());
+//                                startActivity(intent);
+//                                finish();
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }).executeAsync();
+        }
     }
 
     @Override
@@ -235,6 +248,7 @@ public class MainLoginActivity extends AppCompatActivity implements FacebookCall
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -251,18 +265,17 @@ public class MainLoginActivity extends AppCompatActivity implements FacebookCall
         if (!remoteUser.getUserName().equals(UserManger.getInstance().getUserName())) {
             UserManger.getInstance().setUserName(remoteUser.getUserName());
         }
+        if (!remoteUser.getUserToken().equals(UserManger.getInstance().getUserToken())) {
+            UserManger.getInstance().setUserToken(remoteUser.getUserToken());
+        }
+
         UserManger.getInstance().setChatIdMap(remoteUser.getChatIdMap());
 
-//        // check user image
-//        if (!remoteUser.getImage().equals(localWriter.getImage())) {
-//            localWriter.setImage(remoteUser.getImage());
-//        }
     }
 
     @OnClick(R.id.button_facebook_login)
     public void onLoginClick() {
         if (isGooglePlayServicesAvailable(this)) {
-            mCallbackManager = CallbackManager.Factory.create();
             loginButton.setReadPermissions("email", "public_profile", "user_friends");
             loginButton.registerCallback(mCallbackManager, this);
             loginButton.performClick();
@@ -287,6 +300,7 @@ public class MainLoginActivity extends AppCompatActivity implements FacebookCall
         Log.d(TAG, "facebook:onSuccess:" + loginResult);
 
         Prefs.with(self).writeBoolean(NOTIFICATION_STATUS, true);
+        this.mToken = loginResult.getAccessToken();
         handleFacebookAccessToken(loginResult.getAccessToken());
     }
 
@@ -300,5 +314,13 @@ public class MainLoginActivity extends AppCompatActivity implements FacebookCall
     public void onError(FacebookException error) {
         Log.d(TAG, "facebook:onError:");
 
+    }
+
+    @Subscribe
+    public void userReadyEvent(UserReadyEvent event){
+        Intent intent = new Intent(self, ContactListActivity.class);
+        intent.putExtra("jsondata", jsondata);
+        startActivity(intent);
+        finish();
     }
 }

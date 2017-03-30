@@ -12,6 +12,7 @@ import com.example.harelavikasis.rumpel.Models.Chat;
 import com.example.harelavikasis.rumpel.Models.Question;
 import com.example.harelavikasis.rumpel.PushNotifications.PushManager;
 import com.example.harelavikasis.rumpel.R;
+import com.example.harelavikasis.rumpel.Utils.Constants;
 import com.google.android.gms.games.internal.constants.QuestState;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -55,8 +56,8 @@ public class QuestionsPickerView extends AppCompatActivity {
         String chatId = intent.getStringExtra("chatId");
         contactToken = intent.getStringExtra("contactToken");
 
-        mDatabase = FirebaseDatabase.getInstance().getReference("chats").child(chatId);
-        globalDatabase = FirebaseDatabase.getInstance().getReference("questions");
+        mDatabase = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_CHATS).child(chatId);
+        globalDatabase = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_QUESTIONS);
 
         fetchQuestions();
 
@@ -119,10 +120,12 @@ public class QuestionsPickerView extends AppCompatActivity {
         selectedQuestions.setQuestionOpen(true);
         selectedQuestions.initCreationTime();
         currentChat.addQuestion(selectedQuestions);
-        mDatabase.child("questions").setValue(currentChat.getQuestions());
-        mDatabase.child("thereOpenQuestion").setValue(true);
-        PushManager pmanager = new PushManager(contactToken,UserManger.getInstance().getUserName() + "Sent you a Riddle");
-        pmanager.sendPush();
+        mDatabase.child(Constants.FIREBASE_QUESTIONS).setValue(currentChat.getQuestions());
+        mDatabase.child(Constants.FIREBASE_OPEN_QUESTION).setValue(true);
+        if (contactToken != null ) {
+            PushManager pmanager = new PushManager(contactToken, UserManger.getInstance().getUserName() + " Sent you a Riddle");
+            pmanager.sendPush();
+        }
         finish();
     }
 

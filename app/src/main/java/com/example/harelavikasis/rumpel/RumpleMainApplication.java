@@ -10,6 +10,7 @@ import com.google.firebase.FirebaseApp;
  */
 
 public class RumpleMainApplication extends Application {
+
     @Override
     public void onCreate() {
         super.onCreate();

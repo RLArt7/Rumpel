@@ -6,6 +6,8 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.Map;
+
 /**
  * Created by harelavikasis on 29/03/2017.
  */
@@ -18,7 +20,11 @@ public class RumpelFirebaseMessagingService extends FirebaseMessagingService {
         // If the application is in the foreground handle both data and notification messages here.
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated.
-        Log.d(TAG, "From: " + remoteMessage.getFrom());
-        Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
+        String from = remoteMessage.getFrom();
+        Map data = remoteMessage.getData();
+//        Log.d(TAG, "From: " + remoteMessage.getFrom());
+//        if (remoteMessage.getNotification().getBody() != null) {
+//            Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
+//        }
     }
 }

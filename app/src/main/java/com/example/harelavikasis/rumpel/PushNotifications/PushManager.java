@@ -4,10 +4,6 @@ package com.example.harelavikasis.rumpel.PushNotifications;
 import java.util.ArrayList;
 
 
-/**
- * Created by Dudu_Cohen on 06/11/2016.
- */
-
 public class PushManager {
 
     private final String massage;

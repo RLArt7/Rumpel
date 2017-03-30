@@ -28,6 +28,7 @@
     import com.example.harelavikasis.rumpel.QuestionsPicker.QuestionsPickerView;
     import com.example.harelavikasis.rumpel.R;
     import com.example.harelavikasis.rumpel.Listeners.OnAnswerClicked;
+    import com.example.harelavikasis.rumpel.Utils.Constants;
     import com.google.firebase.database.DataSnapshot;
     import com.google.firebase.database.DatabaseError;
     import com.google.firebase.database.DatabaseReference;
@@ -118,8 +119,8 @@
                     facebookId = user.getFacebookId();
                 }
             }
-            usersRef = usersRef.child("users").child(facebookId).child("chatIdMap");
-            contactRef = contactRef.child("users").child(contactId);
+            usersRef = usersRef.child(Constants.FIREBASE_USERS).child(facebookId).child(Constants.FIREBASE_CHAT_ID_MAP);
+            contactRef = contactRef.child(Constants.FIREBASE_USERS).child(contactId);
 //            cManger = new ChatManager(this);
 
             fetchContactInfo();
@@ -189,15 +190,18 @@
             String endPoint = endPointId;
             String chatId = UserManger.getInstance().getChatIdWithendPointUserId(endPoint);
 
-            if (chatId == null && UserManger.getInstance().isSet())
+            if (chatId == null && UserManger.getInstance().isChatMapSet())
             {
-                chatId = globalDatabase.child("chats").push().getKey();
-                globalDatabase.child("users").child(endPointId).child("chatIdMap").child(UserManger.getInstance().getFacebookId()).setValue(chatId);
+                chatId = globalDatabase.child(Constants.FIREBASE_CHATS).push().getKey();
+                Chat chat = new Chat(endPoint,chatId);
+                globalDatabase.child(Constants.FIREBASE_USERS).child(endPointId).child(Constants.FIREBASE_CHAT_ID_MAP).child(UserManger.getInstance().getFacebookId()).setValue(chatId);
                 UserManger.getInstance().addChatId(chatId,endPoint);
                 usersRef.setValue(UserManger.getInstance().getChatIdMap());
+
+                globalDatabase.child(Constants.FIREBASE_CHATS).child(chatId).setValue(chat);
             }
 
-            mDatabase = FirebaseDatabase.getInstance().getReference("chats").child(chatId);
+            mDatabase = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_CHATS).child(chatId);
         }
 
         @Override
@@ -341,17 +345,20 @@
             answers.add(new Answer(answer3Text.getText().toString(), radio3.isChecked()));
             answers.add(new Answer(answer4Text.getText().toString(), radio4.isChecked()));
 
-            String key1 = globalDatabase.child("questions").push().getKey();
+            String key1 = globalDatabase.child(Constants.FIREBASE_QUESTIONS).push().getKey();
             Question q1 = new Question(key1 , questionText.getText().toString(), answers);
-            globalDatabase.child("questions").child(q1.getId()).setValue(q1);
+            globalDatabase.child(Constants.FIREBASE_QUESTIONS).child(q1.getId()).setValue(q1);
             q1.setSenderId(UserManger.getInstance().getUserId());
             q1.initCreationTime();
             if (currentChat.fetchTheOpenQuestion() != null)  currentChat.fetchTheOpenQuestion().closeQuestion();
             currentChat.addQuestion(q1);
-            mDatabase.child("questions").setValue(currentChat.getQuestions());
-            mDatabase.child("thereOpenQuestion").setValue(true);
-            PushManager pmanager = new PushManager(contact.getUserToken(),UserManger.getInstance().getUserName() + "Sent you a Riddle");
-            pmanager.sendPush();
+            mDatabase.child(Constants.FIREBASE_QUESTIONS).setValue(currentChat.getQuestions());
+            mDatabase.child(Constants.FIREBASE_OPEN_QUESTION).setValue(true);
+
+            if (contact.getUserToken() != null ) {
+                PushManager pmanager = new PushManager(contact.getUserToken(), UserManger.getInstance().getUserName() + " Sent you a Riddle");
+                pmanager.sendPush();
+            }
             emptyAllFields();
         }
 
@@ -367,8 +374,8 @@
         public void notifyChatForQuestionsAnswer(Boolean isRight) {
             currentChat.fetchTheOpenQuestion().setIsRightAnswer(isRight);
             currentChat.fetchTheOpenQuestion().closeQuestion();
-            mDatabase.child("questions").setValue(currentChat.getQuestions());
-            mDatabase.child("thereOpenQuestion").setValue(false);
+            mDatabase.child(Constants.FIREBASE_QUESTIONS).setValue(currentChat.getQuestions());
+            mDatabase.child(Constants.FIREBASE_OPEN_QUESTION).setValue(false);
         }
 
         @Override

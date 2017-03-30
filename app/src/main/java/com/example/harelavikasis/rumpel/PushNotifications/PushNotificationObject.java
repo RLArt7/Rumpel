@@ -31,15 +31,17 @@ public class PushNotificationObject {
     }
 
     public static class AdditionalData {
-        private String massage;
+        private String title;
+        private String body;
 
         public AdditionalData(String massage) {
-            this.massage = massage;
+            title = "Rumpel App";
+            this.body = massage;
 
         }
 
         public String getMassage() {
-            return massage;
+            return body;
         }
 
     }

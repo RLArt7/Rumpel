@@ -2,6 +2,7 @@ package com.example.harelavikasis.rumpel.Services;
 
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -22,6 +23,8 @@ public class RumpelFirebaseMessagingService extends FirebaseMessagingService {
         // message, here is where that should be initiated.
         String from = remoteMessage.getFrom();
         Map data = remoteMessage.getData();
+//        Toast.makeText(getActivity(), (String)data.result,
+//                Toast.LENGTH_LONG).show();
 //        Log.d(TAG, "From: " + remoteMessage.getFrom());
 //        if (remoteMessage.getNotification().getBody() != null) {
 //            Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());

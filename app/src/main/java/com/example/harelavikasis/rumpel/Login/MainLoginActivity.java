@@ -90,6 +90,7 @@ public class MainLoginActivity extends AppCompatActivity implements FacebookCall
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
         FirebaseInstanceId.getInstance().getToken();
+        fetchUserFromPrefs();
         mCallbackManager = CallbackManager.Factory.create();
         mAuth = FirebaseAuth.getInstance();
 
@@ -137,6 +138,14 @@ public class MainLoginActivity extends AppCompatActivity implements FacebookCall
             }
         };
 
+    }
+
+    private void fetchUserFromPrefs() {
+        if (UserManger.getInstance().getUserName() == null)
+        {
+            String json = Prefs.with(this).read(KEY_USER);
+            UserManger.getInstance().setWithUser(new Gson().fromJson(json, User.class));
+        }
     }
 
     private void setAuthWithOAuth(FirebaseUser u) {
